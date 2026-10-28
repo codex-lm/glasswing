@@ -21,3 +21,8 @@ Next: M1.3 Three.js scene, pooled procedural silhouettes, forest and safe model 
 Done: perspective Three.js scene, warm/cool lighting, layered instanced forest, four-wing silhouettes and readable masks/cracks, primitive poses, interpolated test movement, pooled visual instances, safe embedded-GLB adapter with clips/material recolouring.
 Deviations: modern capsule primitive is unavailable in pinned r128; stretched low-poly spheres form capsule-like bodies. Instancing across characters keeps the 20-character draw budget feasible. Model loading retains placeholders on failure; unsupported compression and external model URIs are rejected before parsing.
 Next: M1.4 frame-data combat and title/menu smoke test, then actual browser verification.
+
+## M1.4 — combat and title
+Done: frame-data punches/combo, moving/down kick, divekick, sword/pogo, charged blast, energy, dodge and block cancels, exact parry windows/reflection/stun, mask shatter and glass cannon; localized title, selection, pause and HUD. Browser test scene rendered with no console errors.
+Deviations: mask damage is fractional on Easy/Hard to honor their damage multipliers; cracks and displayed mask points round upward. Versus damage will normalize move damage by 3 so glass damage can meaningfully triple mask damage. Missing-model audio remains silent. Desktop/phone framing needs a later visual pass.
+Next: M1.5 three telegraphed enemy types, elites, waves and seeded drops.
