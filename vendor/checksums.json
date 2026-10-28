@@ -1,0 +1,26 @@
+{
+  "vendor/build/three.module.js": {
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/r128/build/three.module.js",
+    "sha256": "af527c374b56b8688737a42d7fcea7cb8aaeb57a4e3c6da98b4dffd55bcc3514"
+  },
+  "vendor/examples/jsm/loaders/GLTFLoader.js": {
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/jsm/loaders/GLTFLoader.js",
+    "sha256": "13e2fe776815595ead459881272336c682d0d9cb9e8833d339cf1aa1aeecdde3"
+  },
+  "vendor/examples/jsm/utils/SkeletonUtils.js": {
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/jsm/utils/SkeletonUtils.js",
+    "sha256": "3271e48dcdb153ec32561e30a260776988a68b2a4dfb46316d9418737ba51a45"
+  },
+  "vendor/LICENSE-three.txt": {
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/r128/LICENSE",
+    "sha256": "7dddf7c5b8fd10ee654db8857d75d104b5557889aa5a91fc4ca545ea7c07062f"
+  },
+  "assets/fonts/fredoka-OFL.txt": {
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/fredoka/OFL.txt",
+    "sha256": "5c9e7eee5c6b25f4b05b8d53b2e470ea4962f9ced742d044a98f7d95d1375bab"
+  },
+  "assets/fonts/nunito-OFL.txt": {
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/nunito/OFL.txt",
+    "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65"
+  }
+}
