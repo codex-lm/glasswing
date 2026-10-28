@@ -1,0 +1,1 @@
+export const AUDIO={fade:.5,duration:.09,base:220,volume:.14,tones:{'mask-shatter':105,'sword-hit':650,parry:1100,block:180,'blast-fire':440,'enemy-beaten':290,'shard-pickup':900,'altar-chime':780,'run-win':1200,'run-lost':130,'enemy-telegraph':350,'boss-roar':70,kick:140,punch1:180,punch2:210,punch3:120}};
