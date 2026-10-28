@@ -19,11 +19,13 @@ import {enemyTick,wavesTick} from './enemies/wild.js';
 import {spawnBoss,bossTick} from './boss.js';
 import {versusFlow,arenaHazards,resetRound} from './versus.js';
 import {coopTick} from './coop.js';
+import {validateLevel} from './level.js';
 
 export function createRun(levels,config={}){
 
  config={seed:'glasswing',kind:'brawler',difficulty:'normal',mode:'solo',eye:'#FF8A3D',kind2:'skimmer',eye2:'#3DE8FF',arena:'arena-clearing',...config};
 
+ if(config.customLevel)levels=[validateLevel(config.customLevel)];
  levels=config.mode==='versus'?[levels.find(l=>l.id===config.arena)||levels[0]]:levels.filter(l=>!l.id.startsWith('arena-'));
  const s={config,seed:config.seed,rng:hashSeed(config.seed),frame:0,area:0,areasCleared:0,level:null,levels,levelRevision:0,players:[entity(1,config.kind,3,5,0,config.difficulty)],enemies:[],nextId:100,spawned:[],lock:null,fragments:0,offered:[],choices:[],altarPlayer:0,bonusUsed:false,bossStarted:false,projectiles:Array.from({length:F.projectilePool},()=>({active:false})),effects:Array.from({length:F.effectPool},()=>({life:0})),drops:[],camera:{x:9,y:5},hitStop:0,shake:0,lives:F.lives,phase:'playing',checkpoint:2,log:[],audio:null,respawn:0,won:false,scores:[0,0],round:0,roundWinner:-1,winner:-1};
 

@@ -61,3 +61,8 @@ Next: M3.1 touch controls and responsive layout; then level editor, extra upgrad
 Done: four right-hand touch buttons, left movement/down zone, double-tap dodge, hold-to-guard melee button, pause, safe-area layout, input pulses for short taps, pointer capture/cancellation, automatic or forced touch setting, complete EN/FR gesture hints. The same bit masks enter the deterministic replay log.
 Deviations: with only four action buttons, guard shares the melee button (100 ms hold) and dodge uses a double tap on the left pad; this preserves all moves without adding six right-hand buttons. Touch currently drives P1; local two-player remains keyboard/gamepad as specified.
 Next: M3.2 in-browser collision/set-piece editor with JSON import/export and playable test level.
+
+## M3.2 — level editor
+Done: standalone bilingual editor loads the four authored areas, paints all collision types, places named set pieces/enemies/checkpoints/start/exit/secrets, supports keyboard painting and undo, validates bounded JSON imports, exports JSON and opens a playable local test. Custom-level data travels inside replay configuration so its input log remains reproducible.
+Deviations: a custom level is a one-level test run; exporting its JSON is the explicit durable delivery path. Editor playback uses same-origin browser storage when available, with a clear error and export alternative otherwise. Automatic path repair is intentionally absent; authors can create challenge or unreachable layouts and must playtest them.
+Next: M3.3 extra upgrades with replay-version preservation, model/set manifest integration and dummy GLB tests.
