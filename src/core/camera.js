@@ -1,0 +1,2 @@
+import {F} from '../data/feel.js';
+export function updateCamera(camera,players,width){const alive=players.filter(p=>!p.dead);const targets=alive.length?alive:players;const x=targets.reduce((sum,p)=>sum+p.x,0)/targets.length;const facing=targets[0].facing;const target=Math.max(F.cameraWidth/2,Math.min(width-F.cameraWidth/2,x+facing*F.cameraAhead));if(Math.abs(target-camera.x)>F.cameraDead)camera.x+=(target-camera.x)*F.cameraEase;camera.y=F.cameraHeight/2;return camera;}

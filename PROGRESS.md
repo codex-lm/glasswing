@@ -11,3 +11,8 @@ Next: M1.2 deterministic simulation, input, physics and camera.
 Done: downloaded all official files, verified SHA-256, converted Google-served TTF to local WOFF2, added dependency integrity tests.
 Deviations: the initial download aborted because Google returned TTF. The first commit's dependency-presence claim was premature; this immediate follow-up supplies the actual files and strengthens the test. No history rewritten.
 Next: M1.2 core, with command failure checked before committing.
+
+## M1.2 — deterministic core
+Done: seeded RNG, frame-based entity state, two keyboard layouts and gamepads, movement, variable jumps, glide, coyote/buffer, substepped grid collision including one-way/slopes, midpoint camera; physics tests pass.
+Deviations: data files live in src/data as in §7's tree; one gamepad in local two-player mode goes to P2 so keyboard P1 + pad P2 works; two pads map in connection order. Deterministic fixed-frame input masks will be the replay format.
+Next: M1.3 Three.js scene, pooled procedural silhouettes, forest and safe model adapter.

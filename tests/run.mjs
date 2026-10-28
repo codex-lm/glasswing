@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import './physics.test.mjs';
 import {readFileSync,existsSync} from 'node:fs';
 import en from '../src/i18n/en.js';
 import fr from '../src/i18n/fr.js';

@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {entity} from '../src/core/entity.js';
+import {physics} from '../src/core/physics.js';
+import {movement} from '../src/game/player.js';
+import {B} from '../src/core/input.js';
+import {hashSeed,random} from '../src/core/rng.js';
+const level={width:30,grid:[Array(30).fill(1),Array(30).fill(0),Array(30).fill(0),Array(30).fill(0)]};level.grid[3][10]=2;
+let p=entity(1,'brawler',4,8);for(let i=0;i<60;i++)physics(p,level);assert.equal(p.y,1);assert(p.grounded);
+p=entity(1,'brawler',10.5,6);for(let i=0;i<40;i++)physics(p,level);assert.equal(p.y,4);p.vy=.3;p.y=1;for(let i=0;i<5;i++)physics(p,level);assert(p.y>1);
+p=entity(1,'brawler',4,1);p.vx=7;level.grid[1][8]=1;physics(p,level);assert(p.x<8,'no horizontal tunnelling');
+p=entity(1,'brawler',4,1);p.coyote=3;p.jumps=2;movement(p,B.jump,level);assert(p.vy>0,'coyote jump');
+p=entity(1,'brawler',4,1.1);p.jumps=2;p.vy=-.2;movement(p,B.jump,level);p.prev=B.jump;for(let i=0;i<4;i++)movement(p,B.jump,level);assert(p.vy>0,'buffered landing jump even when hold begins glide');
+const a={rng:hashSeed('Charles')},b={rng:hashSeed('Charles')};for(let i=0;i<1000;i++)assert.equal(random(a),random(b));
+console.log('PASS physics: solid, one-way, coyote, buffered landing, tunnelling; seeded RNG');
