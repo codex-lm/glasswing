@@ -1,0 +1,10 @@
+{
+  "title": "Glasswing",
+  "description": "A fast 3D side-scrolling forest action game designed by Charles. Four black wings, a white mask, a needle-sword. When your mask breaks, become a glass cannon. Solo and two players on one keyboard. English and French.",
+  "entrypoint": "index.html",
+  "license": "MIT",
+  "genre": ["Action", "Platformer", "Fighting"],
+  "themes": ["Forest", "Monsters", "Local co-op", "Versus"],
+  "controls": ["Arrows or WASD: move. Space: jump, again for double jump, hold to glide.", "J: punch / kick. K: sword. L: blast, hold to charge. Shift: dodge. U: block / parry.", "Two players: WASD + F G H R T; arrows + J K L Shift I. Gamepads supported."],
+  "credits": ["Designed by Charles. Produced by Cedric Bernadac.", "Developed by Nilo with Codex. Original procedural art; external media pending.", "Three.js MIT, Fredoka and Nunito SIL OFL. See THIRD_PARTY_NOTICES.md and ASSETS-LICENSE.md."]
+}

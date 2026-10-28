@@ -1,0 +1,9 @@
+SPEC-glasswing.md
+SPEC-jump1.md
+*.blend
+*.log
+.DS_Store
+node_modules/
+package.json
+package-lock.json
+.artifacts/
