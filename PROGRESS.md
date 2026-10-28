@@ -31,3 +31,8 @@ Next: M1.5 three telegraphed enemy types, elites, waves and seeded drops.
 Done: ground Brawlers with charge, looping/diving Skimmers, retreating ranged Sparks, two-hit elite half masks, 24–30 frame telegraphs, staggered waves/locks and seeded one-in-six shards plus energy drops. Telegraph bounds tested.
 Deviations: enemy charge selection consumes the run RNG, decorative movement does not. Drops currently collect on contact; the player can jump over shards to preserve glass mode. No unavoidable contact damage outside a telegraphed attack.
 Next: M1.6 four authored levels, checkpoints, upgrades, secrets, boss, run results and share card.
+
+## M1.6 — full forest structure
+Done: four 60-tile level files, six waves per area, gaps/platforms/breakable walls, 20-tile checkpoints, three altars, all 13 specified upgrades, hidden mask/fragment in each area, 24-HP three-phase boss, one-second respawn, win/loss stats and 1200×630 share card; seed/input replay and level reachability tests pass.
+Deviations: the fourth fragment opens the deferred third-altar bonus immediately when found in the Nest, resolving the impossible original order without inserting a fourth altar. Boss phase 3 contact danger begins after the mask-break invincibility warning. The first automated full-run attempt is the next step; duration and difficulty are not yet certified.
+Next: M1.7 legal-input playthrough, replay capture and tuning; visual framing/performance measurements.
