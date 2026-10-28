@@ -1,0 +1,1 @@
+export const testLevel={id:'landing',width:60,start:{x:3,y:1},end:58,checkpoints:[2,20,40],grid:[Array(60).fill(1),Array(60).fill(0),Array(60).fill(0),Array.from({length:60},(_,i)=>i>12&&i<17?2:0)],pieces:[]};

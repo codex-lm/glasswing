@@ -1,2 +1,12 @@
 import {t} from './ui/i18n.js';
-document.querySelector('#ui').innerHTML=`<section class="panel title"><div class="eyebrow">${t('byline')}</div><h1>${t('title')}</h1><p class="lead">${t('tagline')}</p><p>${t('ready')}</p><div class="credit">${t('credit')}</div></section>`;
+import {View} from './render/scene.js';
+import {Input} from './core/input.js';
+import {entity,remember} from './core/entity.js';
+import {movement} from './game/player.js';
+import {updateCamera} from './core/camera.js';
+import {testLevel} from './data/test-level.js';
+import {loadManifest} from './ui/assets.js';
+const view=new View(document.querySelector('#world'));const input=new Input();const player=entity(1);const state={players:[player],enemies:[],frame:0,camera:{x:9,y:5}};
+view.setLevel(testLevel);loadManifest();
+if(!view.available)document.querySelector('#ui').innerHTML=`<section class="panel"><p>${t('noWebGL')}</p></section>`;
+let last=0,acc=0;function loop(time){const dt=Math.min(.1,(time-last)/1000||0);last=time;acc+=dt;let steps=0;while(acc>=1/60&&steps++<5){remember(player);const mask=input.sample();movement(player,mask,testLevel);player.prev=mask;state.frame++;updateCamera(state.camera,state.players,testLevel.width);acc-=1/60;}if(steps>=5)acc=0;view.render(state,acc*60,dt);requestAnimationFrame(loop);}requestAnimationFrame(loop);

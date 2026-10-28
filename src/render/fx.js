@@ -1,0 +1,6 @@
+import * as T from '../../vendor/build/three.module.js';
+import {F} from '../data/feel.js';
+export class FX{
+ constructor(scene){this.temp=new T.Object3D();this.color=new T.Color();this.mesh=new T.InstancedMesh(new T.IcosahedronGeometry(1,0),new T.MeshBasicMaterial({color:0xffffff}),F.effectPool+F.projectilePool+100);this.mesh.frustumCulled=false;scene.add(this.mesh);}
+ draw(state){let n=0;const add=(x,y,size,color,angle=0)=>{if(n>=this.mesh.instanceMatrix.count)return;this.temp.position.set(x,y,.4);this.temp.scale.setScalar(size);this.temp.rotation.z=angle;this.temp.updateMatrix();this.mesh.setMatrixAt(n,this.temp.matrix);this.color.set(color);this.mesh.setColorAt(n,this.color);n++;};for(const p of state.projectiles||[])if(p.active){add(p.x,p.y,p.radius,p.color);add(p.x-p.vx*2,p.y,p.radius*.65,p.color);}for(const e of state.effects||[])if(e.life>0)add(e.x,e.y,e.size*e.life/F.effectLife,e.color,e.life);for(const d of state.drops||[])if(d.active)add(d.x,d.y+Math.sin(state.frame*.06)*.1,d.type==='energy'?.1:.2,d.type==='fragment'?0xffc77c:d.type==='energy'?0x79e0c8:0xf1ece2);this.mesh.count=n;this.mesh.instanceMatrix.needsUpdate=true;if(this.mesh.instanceColor)this.mesh.instanceColor.needsUpdate=true;}
+}
