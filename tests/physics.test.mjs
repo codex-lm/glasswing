@@ -11,4 +11,6 @@ p=entity(1,'brawler',4,1);p.vx=7;level.grid[1][8]=1;physics(p,level);assert(p.x<
 p=entity(1,'brawler',4,1);p.coyote=3;p.jumps=2;movement(p,B.jump,level);assert(p.vy>0,'coyote jump');
 p=entity(1,'brawler',4,1.1);p.jumps=2;p.vy=-.2;movement(p,B.jump,level);p.prev=B.jump;for(let i=0;i<4;i++)movement(p,B.jump,level);assert(p.vy>0,'buffered landing jump even when hold begins glide');
 const a={rng:hashSeed('Charles')},b={rng:hashSeed('Charles')};for(let i=0;i<1000;i++)assert.equal(random(a),random(b));
+const slope={width:10,grid:[Array(10).fill(1),[0,0,0,3,0,0,0,0,0,0]]};p=entity(1,'brawler',3.05,1.05);p.vx=.09;for(let i=0;i<5;i++)physics(p,slope);assert(p.y>1.45,'walk up a slope without sinking');
+p=entity(1,'brawler',4,1);p.knockback=-.5;p.knockFrames=6;for(let i=0;i<6;i++)physics(p,level);assert(Math.abs(p.x-3.5)<.001,'guard knockback is exactly half a tile');
 console.log('PASS physics: solid, one-way, coyote, buffered landing, tunnelling; seeded RNG');

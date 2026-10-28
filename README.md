@@ -26,7 +26,7 @@ Levels use bottom-up tile rows: 0 empty, 1 solid, 2 one-way, 3 ascending slope, 
 
 - [x] Local HTTP title, arrows and Space navigation, selection, pause; browser console clean. Explicit `?no-webgl` capability fallback displays a clear message and usable menus.
 - [x] `node tests/run.mjs`: physics, guard/parry/stun/reflection, glass mode, levels, deterministic replay, save validation, EN/FR parity, vendor integrity and package checks.
-- [x] Full Normal Brawler victory replay in tests/replays/normal-brawler.json: 6,277 simulation frames, 67 credited defeats, one life left. How to play → Watch verified replay plays it in the renderer.
+- [x] At tag v0.1.0: Normal Brawler victory in 6,277 simulation frames, 67 credited defeats, one life left. The current tests/replays/normal-brawler.json is regenerated after simulation fixes; How to play → Watch verified replay plays the current recording.
 - [x] Attacks start in 4–8 frames and finish within 24. Respawn is 60 simulation frames. First wave triggers at tile 4, one tile from start.
 - [ ] End-to-end title-to-first-fight wall-clock timing under 10 seconds has not been instrumented yet.
 - [x] Twenty procedural characters: 16 draw calls, 42,592 triangles in the diagnostic scene.
@@ -36,7 +36,7 @@ Levels use bottom-up tile rows: 0 empty, 1 solid, 2 one-way, 3 ascending slope, 
 - [x] Legal files/asset brief included; approximately 1.46 MB before real media. Official vendor SHA-256 checked. No external active requests or prohibited runtime APIs in application code.
 - [ ] Keyboard navigation exercised; gamepad bindings implemented but no physical controller available. Phone layout inspection belongs to the M3 touch pass.
 
-The 15–25 minute human run target is not verified. The automated full-information run takes 104.6 seconds; see PROGRESS.md. Checkboxes intentionally distinguish evidence from implementation.
+The 15–25 minute human run target is not verified. The original automated full-information run took 104.6 seconds; see PROGRESS.md for subsequent recordings. Checkboxes intentionally distinguish evidence from implementation. Replays should be shared with their exact Git commit/tag: simulation corrections can change old input logs' outcomes, even when the input format stays compatible.
 
 ## M2 — v0.2.0
 
@@ -56,7 +56,7 @@ Touch controls appear on touch devices, or can be forced in Options. Move/down o
 
 Open tools/level-editor.html or Options → Level editor. Paint tiles, set markers and place enemies/set pieces. Drag paints; right click erases; arrows/Space/Delete also work. Export JSON to retain a copy. Play this level uses local browser storage and opens a one-level test; its exact custom JSON is included in saved/replay configuration.
 
-New runs use rulesVersion 3, adding Wind Runner (+10% speed), Deep Reserve (+2 energy capacity), Bright Motes (+1 energy per mote). Older recordings retain the original offer pool, so the v0.1.0 replay still wins.
+New runs use rulesVersion 3, adding Wind Runner (+10% speed), Deep Reserve (+2 energy capacity), Bright Motes (+1 energy per mote). Older recordings retain the original offer pool. For exact historical physics use the recording's original tag, because later bug fixes affect outcomes.
 
 Asset verification: `node tests/run.mjs` parses the two original embedded GLB fixtures with the official GLTFLoader, checks 30 animation clips, independently cloned skin bones, recoloured materials, mask/cracks/shards, named forest meshes and rejected external/compressed resources. `tools/asset-check.html` uses assets/manifest.test.json; browser inspection confirmed one loaded model, 30 clips, loaded forest set, zero pending/failed loads and 9 draw calls. `?assets=test` activates the same fixture manifest in the game. Change the normal assets/manifest.json for delivered art; no gameplay code changes are needed. Do not treat the blocky fixtures as final art.
 

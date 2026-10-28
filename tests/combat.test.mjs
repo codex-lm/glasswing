@@ -14,4 +14,5 @@ p.glass=true;p.mask=0;p.inv=0;p.blocking=true;p.blockAge=9;assert.equal(hurt(s,p
 const r=createRun([testLevel]);const a=r.players[0],b=entity(3,'spark',4,1,2);a.x=3;a.y=1;a.grounded=true;a.blocking=true;a.blockAge=0;b.facing=-1;r.enemies.push(b);fire(r,b,false,true);const orb=r.projectiles.find(q=>q.active);orb.x=3.35;projectilesTick(r,[a,b]);assert.equal(orb.team,0);assert(orb.vx>0);assert.equal(orb.color,a.eye);assert.equal(b.stun,60);
 for(const m of Object.values(MOVES)){assert(m.startup<=8);assert(m.total<=24);assert.equal(m.frames.length,m.total);}
 for(const e of Object.values(ENEMIES)){assert(e.telegraph>=20&&e.telegraph<=30);assert(e.chargeTelegraph>=20&&e.chargeTelegraph<=30);}
+const kill=createRun([testLevel],{kind:'spark'}),shooter=kill.players[0];shooter.x=3;shooter.y=1;const victim=entity(9,'brawler',3.8,1,2);victim.hp=1;kill.enemies.push(victim);fire(kill,shooter);projectilesTick(kill,[shooter,victim]);assert(victim.dead);assert.equal(shooter.kills,1,'projectile credits actual owner');
 console.log('PASS combat: guard, guard break, exact parry bounds, stun, reflection, immunity, glass damage, heal, fatal hit; frame pace');

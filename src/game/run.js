@@ -10,7 +10,7 @@ import {B,edge} from '../core/input.js';
 
 import {playerTick} from './player.js';
 
-import {projectilesTick,heal} from '../core/combat.js';
+import {projectilesTick,heal,attackTick} from '../core/combat.js';
 
 import {updateCamera} from '../core/camera.js';
 
@@ -70,8 +70,10 @@ export function tick(s,inputs=[0,0]){
 
  for(const e of s.players.concat(s.enemies))remember(e);
 
- for(let i=0;i<s.players.length;i++)playerTick(s,s.players[i],inputs[i]||0,s.config.mode==='versus'?s.players:s.enemies);
+ for(let i=0;i<s.players.length;i++)playerTick(s,s.players[i],inputs[i]||0,s.config.mode==='versus'?s.players:s.enemies,s.config.mode!=='versus');
 
+ // Capture both active moves before resolving versus hits: same-frame attacks can trade.
+ if(s.config.mode==='versus'){const pending=s.players.map(p=>({p,move:p.move,frame:p.moveFrame}));for(const a of pending)if(a.move){a.p.move=a.move;a.p.moveFrame=a.frame;attackTick(s,a.p,s.players);if(a.p.dead)a.p.move=null;}}
  for(const e of s.enemies)e.boss?bossTick(s,e):enemyTick(s,e);
 
  projectilesTick(s,s.players.concat(s.enemies));wavesTick(s);if(s.config.mode==='versus')arenaHazards(s);if(s.config.mode==='coop')coopTick(s);flow(s);

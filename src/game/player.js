@@ -19,7 +19,7 @@ export function movement(e,input,level){
  else if(!e.grounded)e.clip='jump';else e.clip=axis?'run':e.glass?'glassidle':'idle';
  physics(e,level,{gravity:!gliding,drop:!!(input&B.down)});
 }
-export function playerTick(s,e,input,targets){
+export function playerTick(s,e,input,targets,resolveAttacks=true){
  if(e.dead)return;
  for(const key of ['inv','stun','flash','dodgeCd','comboTimer'])if(e[key]>0)e[key]--;
  if(e.stun){physics(e,s.level);e.prev=input;return;}
@@ -31,5 +31,5 @@ export function playerTick(s,e,input,targets){
  movement(e,input,s.level);
  if(e.move?.startsWith('punch')&&edge(input,e.prev,B.sword)&&e.moveFrame>=MOVES[e.move].startup+MOVES[e.move].active)e.move=null;
  if(!e.move){if(edge(input,e.prev,B.sword))startMove(e,input&B.down&&!e.grounded?'downsword':'sword');else if(edge(input,e.prev,B.attack)){if(input&B.down||input&(B.left|B.right))startMove(e,e.grounded?'kick':'divekick');else{e.combo=e.comboTimer?(e.combo+1)%3:0;e.comboTimer=F.comboWindow;startMove(e,`punch${e.combo+1}`);}}else if(input&B.blast){e.charge++;e.clip='charge';}else if(e.charge){startMove(e,e.charge>=F.charge?'charge':'blast');e.charge=0;e.fired=false;}}
- if(e.move){e.clip=e.move;attackTick(s,e,targets);}e.prev=input;
+ if(e.move){e.clip=e.move;if(resolveAttacks)attackTick(s,e,targets);}e.prev=input;
 }
