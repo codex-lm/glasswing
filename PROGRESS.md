@@ -56,3 +56,8 @@ Next: M2.2 browser verification and two-player control/readability pass, then v0
 Done: French two-player menus, independent kind/eye selectors, arena choice and live Brawler-versus-Spark Hollow scene inspected without console errors; two HUDs use eye colours and correct masks/round score. Added 1,800-frame deterministic tests for versus and co-op. M1 reference still wins unchanged. v0.2.0 tagged.
 Deviations: the in-app browser is throttled outside tool activity and Chrome automation is unavailable, so physical simultaneous-input and foreground FPS claims remain explicitly unverified. No bloom will be enabled without a valid 60 fps measurement. The game remains local-only.
 Next: M3.1 touch controls and responsive layout; then level editor, extra upgrades and dummy-GLB integration proof.
+
+## M3.1 — touch input
+Done: four right-hand touch buttons, left movement/down zone, double-tap dodge, hold-to-guard melee button, pause, safe-area layout, input pulses for short taps, pointer capture/cancellation, automatic or forced touch setting, complete EN/FR gesture hints. The same bit masks enter the deterministic replay log.
+Deviations: with only four action buttons, guard shares the melee button (100 ms hold) and dodge uses a double tap on the left pad; this preserves all moves without adding six right-hand buttons. Touch currently drives P1; local two-player remains keyboard/gamepad as specified.
+Next: M3.2 in-browser collision/set-piece editor with JSON import/export and playable test level.

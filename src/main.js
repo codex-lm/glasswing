@@ -23,6 +23,7 @@ import {loadSave,save} from './core/save.js';
 
 import {options} from './ui/options.js';
 
+import {TouchControls} from './ui/touch.js';
 import {AudioBus} from './ui/audio.js';
 
 import {resultsHTML,resultStats,shareCard,download} from './ui/results.js';
@@ -33,6 +34,7 @@ const storage=loadSave();setLanguage(storage.settings.language);
 
 const view=new View(document.querySelector('#world'),{disabled:new URLSearchParams(location.search).has('no-webgl')}),input=new Input(),screens=new Screens(document.querySelector('#ui')),audio=new AudioBus(storage.settings);
 
+const touch=new TouchControls(input,storage.settings,pause);
 input.maps=structuredClone(storage.settings.maps);
 
 let levels=[testLevel],state=createRun(levels),paused=false,uiPhase='',queued=[0,0],replaying=null,replayRow=0,replayCount=0,saveFrame=0;
@@ -47,7 +49,7 @@ function title(){paused=false;input.multi=false;replaying=null;state=createRun(l
 
  const row=document.createElement('div');row.className='buttons';if(storage.current){const b=document.createElement('button');b.textContent=t('continue');b.onclick=resumeSaved;row.append(b);}screens.root.firstChild.append(row);}
 
-function showOptions(back){audio.settings=storage.settings;options(screens,storage,input,back,()=>{audio.settings=storage.settings;title();});}
+function showOptions(back){audio.settings=storage.settings;touch.settings=storage.settings;options(screens,storage,input,back,()=>{audio.settings=storage.settings;title();});}
 
 function howto(){screens.show('howto',`<section class="panel"><h2>${t('howto')}</h2><p>${t('controls')}</p><h3>${t('credits')}</h3><p>${t('about')}</p><div class="buttons"><button data-action="back">${t('back')}</button><button data-action="replay">${t('replayWatch')}</button></div></section>`,{back:title,replay:watchReplay});}
 
@@ -73,5 +75,5 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&['playing'
 
 function menuPad(){const menu=input.menu();if(screens.name==='playing'||!menu)return;const controls=[...document.querySelectorAll('#ui button,#ui select,#ui input')];if(menu&3){const active=document.activeElement;if(active?.tagName==='SELECT'){active.selectedIndex=(active.selectedIndex+(menu&1?-1:1)+active.options.length)%active.options.length;active.dispatchEvent(new Event('change'));}else{screens.focus=(screens.focus+(menu&1?-1:1)+controls.length)%controls.length;controls[screens.focus]?.focus();}}if(menu&4){const active=document.activeElement;if(active?.tagName==='SELECT'){screens.focus=(controls.indexOf(active)+1)%controls.length;controls[screens.focus]?.focus();}else controls[screens.focus]?.click();}if(menu&8){if(paused)resume();else title();}}
 
-let last=0,acc=0;function loop(time){const dt=Math.min(.1,(time-last)/1000||0);last=time;acc+=dt;let steps=0;while(acc>=1/F.hz&&steps++<F.maxSteps){if(['playing','altar','respawn','round'].includes(screens.name)&&!paused){let masks=[input.sample(0)|queued[0],(input.multi?input.sample(1):0)|queued[1]];queued=[0,0];if((masks[0]|masks[1])&B.pause)pause();else{if(replaying){const row=replaying.inputs[replayRow];if(row){masks=[row[1],row[2]];if(++replayCount>=row[0]){replayCount=0;replayRow++;}}else masks=[0,0];}const revision=state.levelRevision;tick(state,masks);if(state.audio)audio.cue(state.audio);if(state.levelRevision!==revision)view.setLevel(state.level);syncUI();if(state.frame-saveFrame>=900){persist();saveFrame=state.frame;}}if(state.frame%6===0){hud(state);if(screens.name==='playing'){let hint=document.querySelector('#play-hint');if(!hint){hint=document.createElement('div');hint.id='play-hint';hint.className='hint';screens.root.append(hint);}hint.textContent=(replaying?t('replaying')+' · ':'')+t(state.level.id)+' · '+(input.multi?t('twoControls'):t('tutorial'+(state.area+1)));}}}else if(screens.name==='title'||screens.name==='select')state.frame++;acc-=1/F.hz;}if(steps>=F.maxSteps)acc=0;view.render(state,acc*F.hz,dt);audio.update(state,['title','select'].includes(screens.name),dt);if(screens.name==='options'){const status=document.querySelector('#key-status');if(status&&input.keys.size)status.textContent=[...input.keys].join(' + ');}menuPad();requestAnimationFrame(loop);}title();requestAnimationFrame(loop);
+let last=0,acc=0;function loop(time){touch.visible(screens.name==='playing'&&!paused&&!replaying);const dt=Math.min(.1,(time-last)/1000||0);last=time;acc+=dt;let steps=0;while(acc>=1/F.hz&&steps++<F.maxSteps){if(['playing','altar','respawn','round'].includes(screens.name)&&!paused){let masks=[input.sample(0)|queued[0],(input.multi?input.sample(1):0)|queued[1]];queued=[0,0];if((masks[0]|masks[1])&B.pause)pause();else{if(replaying){const row=replaying.inputs[replayRow];if(row){masks=[row[1],row[2]];if(++replayCount>=row[0]){replayCount=0;replayRow++;}}else masks=[0,0];}const revision=state.levelRevision;tick(state,masks);if(state.audio)audio.cue(state.audio);if(state.levelRevision!==revision)view.setLevel(state.level);syncUI();if(state.frame-saveFrame>=900){persist();saveFrame=state.frame;}}if(state.frame%6===0){hud(state);if(screens.name==='playing'){let hint=document.querySelector('#play-hint');if(!hint){hint=document.createElement('div');hint.id='play-hint';hint.className='hint';screens.root.append(hint);}hint.textContent=(replaying?t('replaying')+' · ':'')+t(state.level.id)+' · '+(input.multi?t('twoControls'):t('tutorial'+(state.area+1)));}}}else if(screens.name==='title'||screens.name==='select')state.frame++;acc-=1/F.hz;}if(steps>=F.maxSteps)acc=0;view.render(state,acc*F.hz,dt);audio.update(state,['title','select'].includes(screens.name),dt);if(screens.name==='options'){const status=document.querySelector('#key-status');if(status&&input.keys.size)status.textContent=[...input.keys].join(' + ');}menuPad();requestAnimationFrame(loop);}title();requestAnimationFrame(loop);
 
