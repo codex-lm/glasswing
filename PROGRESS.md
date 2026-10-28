@@ -36,3 +36,8 @@ Next: M1.6 four authored levels, checkpoints, upgrades, secrets, boss, run resul
 Done: four 60-tile level files, six waves per area, gaps/platforms/breakable walls, 20-tile checkpoints, three altars, all 13 specified upgrades, hidden mask/fragment in each area, 24-HP three-phase boss, one-second respawn, win/loss stats and 1200×630 share card; seed/input replay and level reachability tests pass.
 Deviations: the fourth fragment opens the deferred third-altar bonus immediately when found in the Nest, resolving the impossible original order without inserting a fourth altar. Boss phase 3 contact danger begins after the mask-break invincibility warning. The first automated full-run attempt is the next step; duration and difficulty are not yet certified.
 Next: M1.7 legal-input playthrough, replay capture and tuning; visual framing/performance measurements.
+
+## M1.7 — first feel and replay pass
+Done: legal-input bot completed all four areas and boss on Normal Brawler, 6,277 fixed frames, 67 credited defeats, one life left, winning in glass mode. Exact seed/input recording checked in and re-executed in tests. Fixed bot air control over gaps; adjusted camera to retain 18 visible tiles on narrow windows and opened the four-wing poses.
+Deviations: automated perfect-information run takes 104.6 s, much shorter than the 15–25 minute design target. That target is NOT verified for a first-time human player; no artificial waiting or inflated enemy HP added to claim compliance. Tutorial/readability and exploratory human duration remain a tuning risk. No hardware gamepad has been physically exercised.
+Next: M1.8 options/remapping, save/replay import/export, audio manifest, acceptance evidence and v0.1.0; continue directly to M2.
