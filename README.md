@@ -37,3 +37,15 @@ Levels use bottom-up tile rows: 0 empty, 1 solid, 2 one-way, 3 ascending slope, 
 - [ ] Keyboard navigation exercised; gamepad bindings implemented but no physical controller available. Phone layout inspection belongs to the M3 touch pass.
 
 The 15–25 minute human run target is not verified. The automated full-information run takes 104.6 seconds; see PROGRESS.md. Checkboxes intentionally distinguish evidence from implementation.
+
+## M2 — v0.2.0
+
+All three kinds are available. Brawler: six mask points and heavy melee. Skimmer: four, faster movement, three jumps and long glide. Spark: five, permanently glowing palms, cheaper piercing blasts.
+
+Two players → Versus: choose kinds, colours and one of three arenas; two round wins take the match. Clearing has a pit, Canopy has wind, Hollow has bouncing mushrooms. No upgrades in versus.
+
+Two players → Co-op: shared pool of four lives, enemies have 50% more HP. Stay within one screen; the trailing partner is pulled to safe ground. Stand still beside a downed partner for two seconds, with at least one mask point, to revive them at the cost of that point. Both players pick at altars. There is no friendly fire.
+
+P1: WASD, Space, F punch, G sword, H blast, R dodge, T guard. P2: arrows, Up jump, J punch, K sword, L blast, Shift dodge, I guard. Colour and controls are shown before play. Options can remap either layout. One keyboard + one gamepad or two gamepads are supported by the adapter.
+
+M2 tests cover correct teams/HP, all kinds, 120-frame revive and cost, leash, independent upgrades, arena hazards, best-of-three transition and two-player determinism. The French two-player menus and Brawler/Spark Hollow duel were inspected in the browser without console errors. Real simultaneous human keyboard rollover/gamepad tests remain for Charles and Cédric.

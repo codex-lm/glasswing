@@ -51,3 +51,8 @@ Next: M2.1 enable Skimmer/Spark selection, versus arenas and best-of-three round
 Done: all three kinds selectable with correct mask/speed/jump/glide/damage values and distinct silhouettes; two independent eye selections; three versus arenas (pit, wind, bouncing mushrooms), best-of-three rounds; co-op shared four lives, +50% enemy/boss HP, 120-frame revive costing one mask point, safe leash and each player's own altar choice. Tests verify those transitions and preserve the M1 victory replay.
 Deviations: identical selected eye colours are automatically separated for readability. A co-op player who falls is placed curled up on the next safe ground so the partner can actually revive them. Versus uses Normal mask counts regardless of solo difficulty. Local modes only, as mandated; no networking included.
 Next: M2.2 browser verification and two-player control/readability pass, then v0.2.0 and M3 touch/editor/assets.
+
+## M2.2 — local-mode validation
+Done: French two-player menus, independent kind/eye selectors, arena choice and live Brawler-versus-Spark Hollow scene inspected without console errors; two HUDs use eye colours and correct masks/round score. Added 1,800-frame deterministic tests for versus and co-op. M1 reference still wins unchanged. v0.2.0 tagged.
+Deviations: the in-app browser is throttled outside tool activity and Chrome automation is unavailable, so physical simultaneous-input and foreground FPS claims remain explicitly unverified. No bloom will be enabled without a valid 60 fps measurement. The game remains local-only.
+Next: M3.1 touch controls and responsive layout; then level editor, extra upgrades and dummy-GLB integration proof.
