@@ -14,7 +14,7 @@ export function hurt(s,target,source,damage=1,{projectile=null,stop=F.hitStop,kn
  if(target.vulnerable){damage*=2;target.vulnerable=false;}
  target.flash=F.flash;target.vx=(target.x>=source.x?1:-1)*knock/6;s.hitStop=Math.max(s.hitStop,target.glass?F.glassStop:stop);s.shake=F.shakeFrames;emit(s,target.x,target.y+target.h*.5,source.eye||0xffffff);
  if(target.team===2){if(target.eliteHits>0)target.eliteHits--;else target.hp-=damage;
-  if(target.boss){target.mask=target.hp;target.phase=target.hp>12?1:target.hp>0?2:3;if(target.hp<=0&&!target.glass){target.glass=true;target.hp=1;target.inv=F.invincible;target.phase=3;s.hitStop=F.swordStop;emit(s,target.x,target.y+2,0xf1ece2,24);}else if(target.glass&&target.hp<=0)target.dead=true;}
+  if(target.boss){target.mask=target.hp;target.phase=target.hp>target.maxMask/2?1:target.hp>0?2:3;if(target.hp<=0&&!target.glass){target.glass=true;target.hp=1;target.inv=F.invincible;target.phase=3;s.hitStop=F.swordStop;emit(s,target.x,target.y+2,0xf1ece2,24);}else if(target.glass&&target.hp<=0)target.dead=true;}
   else if(target.hp<=0)target.dead=true;
  }else{
   if(target.glass){if(target.upgrades.includes('secondMask')&&!target.secondUsed){target.secondUsed=true;heal(target,1);}else target.dead=true;}

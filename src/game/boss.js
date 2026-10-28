@@ -4,7 +4,7 @@ import {F,DIFFICULTY} from '../data/feel.js';
 import {hurt,fire,emit} from '../core/combat.js';
 import {physics} from '../core/physics.js';
 import {spawnEnemy} from './enemies/wild.js';
-export function spawnBoss(s){const e=entity(s.nextId++,'brawler',55,1,2,s.config.difficulty);Object.assign(e,{boss:true,phase:1,hp:BOSS.hp*(s.config.mode==='coop'?F.coopHP:1),maxMask:BOSS.hp,mask:BOSS.hp,eye:'#19B8A6',w:e.w*3,h:e.h*3,ai:'idle',aiTimer:20,sequence:0});s.enemies.push(e);s.bossStarted=true;s.audio='boss-roar';return e;}
+export function spawnBoss(s){const e=entity(s.nextId++,'brawler',55,1,2,s.config.difficulty);Object.assign(e,{boss:true,phase:1,hp:BOSS.hp*(s.config.mode==='coop'?F.coopHP:1),maxMask:BOSS.hp*(s.config.mode==='coop'?F.coopHP:1),mask:BOSS.hp*(s.config.mode==='coop'?F.coopHP:1),eye:'#19B8A6',w:e.w*3,h:e.h*3,ai:'idle',aiTimer:20,sequence:0});s.enemies.push(e);s.bossStarted=true;s.audio='boss-roar';return e;}
 export function bossTick(s,e){if(e.dead)return;const p=s.players.find(p=>!p.dead);if(!p)return;for(const key of ['inv','flash'])if(e[key]>0)e[key]--;if(e.stun>0){e.stun--;return;}e.facing=p.x<e.x?-1:1;e.vx=0;
  if(e.ai==='idle'||e.ai==='recover'){e.clip=e.glass?'glassidle':'idle';if(--e.aiTimer<=0){e.ai='telegraph';e.aiTimer=BOSS.telegraph;e.action=BOSS.attacks[e.phase-1][e.sequence++%2];e.clip='telegraph';}}
  else if(e.ai==='telegraph'){e.clip='telegraph';if(--e.aiTimer<=0){e.ai='attack';e.aiTimer=BOSS.active;e.hitIds=[];e.clip=e.action;}}
