@@ -1,0 +1,1 @@
+export const ENEMIES={brawler:{hp:6,speed:.035,reach:1.25,telegraph:24,chargeTelegraph:30,active:10,recovery:42,notice:7,chargeSpeed:.16},skimmer:{hp:3,speed:.045,reach:5,telegraph:26,chargeTelegraph:28,active:18,recovery:52,notice:9,chargeSpeed:.13},spark:{hp:4,speed:.025,reach:8,telegraph:28,chargeTelegraph:28,active:8,recovery:65,notice:10,chargeSpeed:.02}};

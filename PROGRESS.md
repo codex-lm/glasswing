@@ -26,3 +26,8 @@ Next: M1.4 frame-data combat and title/menu smoke test, then actual browser veri
 Done: frame-data punches/combo, moving/down kick, divekick, sword/pogo, charged blast, energy, dodge and block cancels, exact parry windows/reflection/stun, mask shatter and glass cannon; localized title, selection, pause and HUD. Browser test scene rendered with no console errors.
 Deviations: mask damage is fractional on Easy/Hard to honor their damage multipliers; cracks and displayed mask points round upward. Versus damage will normalize move damage by 3 so glass damage can meaningfully triple mask damage. Missing-model audio remains silent. Desktop/phone framing needs a later visual pass.
 Next: M1.5 three telegraphed enemy types, elites, waves and seeded drops.
+
+## M1.5 — wild Glasswings
+Done: ground Brawlers with charge, looping/diving Skimmers, retreating ranged Sparks, two-hit elite half masks, 24–30 frame telegraphs, staggered waves/locks and seeded one-in-six shards plus energy drops. Telegraph bounds tested.
+Deviations: enemy charge selection consumes the run RNG, decorative movement does not. Drops currently collect on contact; the player can jump over shards to preserve glass mode. No unavoidable contact damage outside a telegraphed attack.
+Next: M1.6 four authored levels, checkpoints, upgrades, secrets, boss, run results and share card.
