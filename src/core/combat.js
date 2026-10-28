@@ -1,4 +1,4 @@
-import {F,DIFFICULTY} from '../data/feel.js';
+import {F,DIFFICULTY,energyMax} from '../data/feel.js';
 import {KINDS} from '../data/kinds.js';
 import {MOVES} from '../data/moves.js';
 import {overlap} from './physics.js';
@@ -8,7 +8,7 @@ export function hurt(s,target,source,damage=1,{projectile=null,stop=F.hitStop,kn
  if(target.dead||target.inv>0||target.dodge>0)return 'immune';
  const front=(source.x-target.x)*target.facing>=0;
  if(target.blocking&&target.grounded&&front){
-  if(target.blockAge<(target.glass?F.glassParry:F.parry)){target.energy=Math.min(F.energy,target.energy+2);target.dodgeCd=0;target.flash=F.parryStop;source.stun=F.stun;source.vulnerable=true;s.hitStop=F.parryStop;s.audio='parry';emit(s,target.x,target.y+1,0xffffff,14);if(projectile){projectile.vx=-projectile.vx;projectile.team=target.team;projectile.owner=target.id;projectile.color=target.eye;projectile.hitIds=[];projectile.life=F.orbLifetime;}return 'parry';}
+  if(target.blockAge<(target.glass?F.glassParry:F.parry)){target.energy=Math.min(energyMax(target),target.energy+2);target.dodgeCd=0;target.flash=F.parryStop;source.stun=F.stun;source.vulnerable=true;s.hitStop=F.parryStop;s.audio='parry';emit(s,target.x,target.y+1,0xffffff,14);if(projectile){projectile.vx=-projectile.vx;projectile.team=target.team;projectile.owner=target.id;projectile.color=target.eye;projectile.hitIds=[];projectile.life=F.orbLifetime;}return 'parry';}
   if(target.energy>=1){target.energy--;target.vx=-target.facing*.09;s.audio='block';return 'block';}
  }
  if(target.vulnerable){damage*=2;target.vulnerable=false;}
@@ -29,7 +29,7 @@ export function damageFor(e,stat){const k=KINDS[e.kind];let value=k[stat];if((st
 export function fire(s,e,charged=false,enemy=false){const k=KINDS[e.kind];const cost=k.cost+(charged?F.chargeExtra:0);if(!enemy&&!e.glass&&e.energy<cost)return false;if(!enemy&&!e.glass)e.energy-=cost;const count=e.upgrades.includes('twinOrb')?2:1;for(let i=0;i<count;i++){const p=s.projectiles.find(v=>!v.active);if(!p)break;Object.assign(p,{active:true,x:e.x+e.facing*.55,y:e.y+e.h*.55+i*.3,vx:e.facing*(enemy?F.enemyOrbSpeed:charged?F.chargedSpeed:F.orbSpeed),radius:charged?.32:F.orbRadius,damage:enemy?DIFFICULTY[s.config.difficulty].damage:damageFor(e,'blast')*(charged?F.chargeDamage:1),team:e.team,owner:e.id,life:F.orbLifetime,range:enemy?12:k.range,travel:0,pierce:k.pierce,color:e.eye,hitIds:[]});}s.audio='blast-fire';return true;}
 export function attackTick(s,e,targets){if(!e.move)return;const m=MOVES[e.move];const speed=e.upgrades.includes('quickHands')?1/.85:1;const frame=Math.floor(e.moveFrame);const box=m.frames[frame];if((e.move==='blast'||e.move==='charge')&&frame>=m.startup&&!e.fired){fire(s,e,e.move==='charge');e.fired=true;}
  if(box&&m.stat!=='blast'){const reach=box.w+(m.stat==='sword'&&e.upgrades.includes('longerNeedle')?.5:0);const hit={x:e.x+e.facing*(box.x+reach/2),y:e.y+box.y,w:reach,h:box.h};if(e.move==='downsword')hit.x=e.x;
- for(const target of targets){if(target.team===e.team||e.hitIds.includes(target.id)||!overlap(hit,target))continue;e.hitIds.push(target.id);let dmg=damageFor(e,m.stat);if(target.team!==2)dmg/=3;const result=hurt(s,target,e,dmg,{stop:e.glass?F.glassStop:box.stop,knock:box.knock});if(result==='hit'){e.energy=Math.min(F.energy,e.energy+1);if(m.stat==='sword')e.jumps=0;if(e.move==='divekick'||e.move==='downsword'){e.vy=e.move==='downsword'?F.pogoSpeed:F.diveBounce;if(e.upgrades.includes('pogoMaster')){e.vy*=1.2;e.energy=Math.min(F.energy,e.energy+1);}}if(m.stat==='kick'){target.vy=.15;if(e.upgrades.includes('shockKick'))target.stun=30;}s.audio=m.stat==='sword'?'sword-hit':e.move;}}
+ for(const target of targets){if(target.team===e.team||e.hitIds.includes(target.id)||!overlap(hit,target))continue;e.hitIds.push(target.id);let dmg=damageFor(e,m.stat);if(target.team!==2)dmg/=3;const result=hurt(s,target,e,dmg,{stop:e.glass?F.glassStop:box.stop,knock:box.knock});if(result==='hit'){e.energy=Math.min(energyMax(e),e.energy+1);if(m.stat==='sword')e.jumps=0;if(e.move==='divekick'||e.move==='downsword'){e.vy=e.move==='downsword'?F.pogoSpeed:F.diveBounce;if(e.upgrades.includes('pogoMaster')){e.vy*=1.2;e.energy=Math.min(energyMax(e),e.energy+1);}}if(m.stat==='kick'){target.vy=.15;if(e.upgrades.includes('shockKick'))target.stun=30;}s.audio=m.stat==='sword'?'sword-hit':e.move;}}
  // Breakable walls use the exact same active-frame rectangle as enemies.
  for(let y=Math.max(0,Math.floor(hit.y));y<Math.min(s.level.grid.length,Math.ceil(hit.y+hit.h));y++)for(let x=Math.max(0,Math.floor(hit.x-hit.w/2));x<Math.min(s.level.width,Math.ceil(hit.x+hit.w/2));x++)if(s.level.grid[y][x]===4){s.level.grid[y][x]=0;s.levelRevision++;emit(s,x+.5,y+.5,0xa9d68a);}
  }

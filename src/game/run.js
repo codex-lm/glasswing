@@ -2,9 +2,9 @@ import {entity,remember} from '../core/entity.js';
 
 import {hashSeed,random} from '../core/rng.js';
 
-import {F,EYES} from '../data/feel.js';
+import {F,EYES,energyMax} from '../data/feel.js';
 
-import {UPGRADES} from '../data/upgrades.js';
+import {UPGRADES,EXTRA_UPGRADES} from '../data/upgrades.js';
 
 import {B,edge} from '../core/input.js';
 
@@ -23,7 +23,7 @@ import {validateLevel} from './level.js';
 
 export function createRun(levels,config={}){
 
- config={seed:'glasswing',kind:'brawler',difficulty:'normal',mode:'solo',eye:'#FF8A3D',kind2:'skimmer',eye2:'#3DE8FF',arena:'arena-clearing',...config};
+ config={seed:'glasswing',kind:'brawler',difficulty:'normal',mode:'solo',rulesVersion:1,eye:'#FF8A3D',kind2:'skimmer',eye2:'#3DE8FF',arena:'arena-clearing',...config};
 
  if(config.customLevel)levels=[validateLevel(config.customLevel)];
  levels=config.mode==='versus'?[levels.find(l=>l.id===config.arena)||levels[0]]:levels.filter(l=>!l.id.startsWith('arena-'));
@@ -35,9 +35,9 @@ export function createRun(levels,config={}){
 
 export function enterArea(s,index){s.area=index;s.level=structuredClone(s.levels[index]);s.levelRevision++;s.enemies=[];s.spawned=[];s.lock=null;s.bossStarted=false;s.checkpoint=s.level.checkpoints[0];s.drops=(s.level.secrets||[]).map(d=>({...d,active:true,life:Infinity}));s.projectiles.forEach(p=>p.active=false);s.camera.x=9;for(const p of s.players){p.x=s.level.start.x;p.y=s.level.start.y;p.px=p.x;p.py=p.y;p.vx=0;p.vy=0;p.move=null;p.dead=false;p.prev=0;}s.phase='playing';}
 
-export function offer(s,bonus=false){s.choices=[];const pool=UPGRADES.filter(k=>!s.offered.includes(k));for(let i=0;i<3&&pool.length;i++){const index=Math.floor(random(s)*pool.length);const key=pool.splice(index,1)[0];s.choices.push(key);s.offered.push(key);}s.phase=bonus?'bonus':'altar';s.altarPlayer=0;for(const p of s.players)p.prev=0;s.audio='altar-chime';}
+export function offer(s,bonus=false){s.choices=[];const pool=(s.config.rulesVersion>=3?UPGRADES.concat(EXTRA_UPGRADES):UPGRADES).filter(k=>!s.offered.includes(k));for(let i=0;i<3&&pool.length;i++){const index=Math.floor(random(s)*pool.length);const key=pool.splice(index,1)[0];s.choices.push(key);s.offered.push(key);}s.phase=bonus?'bonus':'altar';s.altarPlayer=0;for(const p of s.players)p.prev=0;s.audio='altar-chime';}
 
-export function choose(s,index){const p=s.players[s.altarPlayer],key=s.choices[index];if(!key)return;p.upgrades.push(key);if(key==='hardenedMask')p.maxMask++;heal(p,p.maxMask);p.energy=F.energy;s.altarPlayer++;if(s.altarPlayer<s.players.length)return;if(s.phase==='bonus'){s.bonusUsed=true;s.phase='playing';}else enterArea(s,s.area+1);}
+export function choose(s,index){const p=s.players[s.altarPlayer],key=s.choices[index];if(!key)return;p.upgrades.push(key);if(key==='hardenedMask')p.maxMask++;heal(p,p.maxMask);p.energy=energyMax(p);s.altarPlayer++;if(s.altarPlayer<s.players.length)return;if(s.phase==='bonus'){s.bonusUsed=true;s.phase='playing';}else enterArea(s,s.area+1);}
 
 function respawn(s){for(const p of s.players){const old=p;const fresh=entity(p.id,p.kind,s.checkpoint,2,p.team,s.config.difficulty);Object.assign(p,fresh,{upgrades:old.upgrades,maxMask:old.maxMask,mask:old.maxMask,eye:old.eye,kills:old.kills,survived:old.survived,secondUsed:old.secondUsed,inv:F.invincible});}s.projectiles.forEach(p=>p.active=false);s.phase='playing';}
 

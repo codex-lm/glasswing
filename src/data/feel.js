@@ -3,3 +3,4 @@ export const F={hz:60,maxSteps:5,gravity:.055,terminal:.65,jumpCut:.42,coyote:6,
 export const DIFFICULTY={easy:{mask:2,damage:.7},normal:{mask:0,damage:1},hard:{mask:-1,damage:1.4}};
 export const EYES=['#FF8A3D','#3DE8FF','#7CFF5E','#B57BFF','#FF4A4A','#FFE24A','#FF7AD9','#FFFFFF'];
 export const PALETTE={body:0x0b0b0d,mask:0xf1ece2,crack:0x5c5650,wild:0x8c8c94,boss:0x19b8a6};
+export function energyMax(entity){return F.energy+(entity.upgrades?.includes('deepReserve')?2:0);}

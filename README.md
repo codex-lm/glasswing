@@ -49,3 +49,15 @@ Two players → Co-op: shared pool of four lives, enemies have 50% more HP. Stay
 P1: WASD, Space, F punch, G sword, H blast, R dodge, T guard. P2: arrows, Up jump, J punch, K sword, L blast, Shift dodge, I guard. Colour and controls are shown before play. Options can remap either layout. One keyboard + one gamepad or two gamepads are supported by the adapter.
 
 M2 tests cover correct teams/HP, all kinds, 120-frame revive and cost, leash, independent upgrades, arena hazards, best-of-three transition and two-player determinism. The French two-player menus and Brawler/Spark Hollow duel were inspected in the browser without console errors. Real simultaneous human keyboard rollover/gamepad tests remain for Charles and Cédric.
+
+## M3
+
+Touch controls appear on touch devices, or can be forced in Options. Move/down on the left zone; double tap that zone to dodge. Four buttons on the right: jump/glide, hit (hold to guard), sword/pogo, orb (hold to charge). Landscape gives the most readable play area. Touch controls operate P1; local multiplayer is intended for keyboard/gamepads.
+
+Open tools/level-editor.html or Options → Level editor. Paint tiles, set markers and place enemies/set pieces. Drag paints; right click erases; arrows/Space/Delete also work. Export JSON to retain a copy. Play this level uses local browser storage and opens a one-level test; its exact custom JSON is included in saved/replay configuration.
+
+New runs use rulesVersion 3, adding Wind Runner (+10% speed), Deep Reserve (+2 energy capacity), Bright Motes (+1 energy per mote). Older recordings retain the original offer pool, so the v0.1.0 replay still wins.
+
+Asset verification: `node tests/run.mjs` parses the two original embedded GLB fixtures with the official GLTFLoader, checks 30 animation clips, independently cloned skin bones, recoloured materials, mask/cracks/shards, named forest meshes and rejected external/compressed resources. `tools/asset-check.html` uses assets/manifest.test.json; browser inspection confirmed one loaded model, 30 clips, loaded forest set, zero pending/failed loads and 9 draw calls. `?assets=test` activates the same fixture manifest in the game. Change the normal assets/manifest.json for delivered art; no gameplay code changes are needed. Do not treat the blocky fixtures as final art.
+
+Bloom is disabled because active-window 60 fps has not been proven. No online edition is included: it was explicitly optional, experimental and separate, and this main edition forbids peer connections.
