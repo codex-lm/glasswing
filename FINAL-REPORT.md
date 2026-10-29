@@ -1,8 +1,8 @@
 # Glasswing — delivery report
 
-Night checkpoint, 29 October 2026. M1–M3 and seventeen polish passes are available on public main. Morning verification and the final handover are still scheduled; the overnight heartbeat remains active.
+Morning handover, 29 October 2026. M1–M3 and seventeen polish passes are complete for the available procedural assets. The v0.3.1 checkpoint contains the overnight corrections and this delivery report. The missing media and unverified acceptance items below remain open.
 
-Repository: https://github.com/codex-lm/glasswing . Milestone tags: v0.1.0, v0.2.0 and v0.3.0. Later corrections are on main. LOB7 publication has not been performed: the specification assigns it to claude.ai after delivery.
+Repository: https://github.com/codex-lm/glasswing . Milestone tags: v0.1.0, v0.2.0 and v0.3.0; verified polish checkpoint: https://github.com/codex-lm/glasswing/tree/v0.3.1 . LOB7 publication has not been performed: the specification assigns it to claude.ai after delivery.
 
 ## What works
 
@@ -54,6 +54,8 @@ Four complete Normal victories are checked into tests/replays and re-executed by
 
 The latest `node tests/sweep.mjs` ran 54 kind/difficulty/seed/mode combinations: 40 victories, 14 defeats, zero unfinished runs and finite player state throughout. These legal-input recordings use a bot with full state visibility. They are regression evidence, not human playtests or proof of the 15–25-minute duration target.
 
+Morning checks also parsed all 81 application/tool/test JavaScript files successfully and reproduced the seven gameplay traces from the verified polish-16 baseline over 37,845 updates. The trace comparison excludes only the audio fields; full-state tracing remains available without `--gameplay`.
+
 Bound localhost browser checks covered the title/selection/pause flows, explicit no-WebGL fallback, EN/FR remapped help, aerial/co-op framing, telegraphs, glow and landmarks, phone-sized layouts, editor export/import/undo and GLB fixtures. Save/export comparisons confirmed pause freezing and replay isolation; the original saved data was restored. Actual PNG exports were inspected for all three solo kinds in English and co-op in French. The latest normal and explicit no-WebGL title smoke had no console errors. Thrown graphics-context requests and hidden-canvas resize recovery have adapter tests.
 
 The valid foreground Edge benchmark from polish 5 measured 59.7 fps over 4,560 frames with 20 procedural characters, 19 draw calls and 43,336 triangles. It was not rerun after later input/audio/startup fixes. This is developer-machine evidence, not proof of five-year-old laptop or phone performance.
@@ -84,4 +86,4 @@ PROGRESS.md records every deviation and specification ambiguity. In particular: 
 
 ## Morning handover
 
-The heartbeat glasswing-finition-de-nuit remains active. At the first wake at or after 07:30 Europe/Madrid on 29 October, finish the safe pass, refresh this status, run final checks, push and verify zero divergence, optionally tag v0.3.1, pause the heartbeat and deliver the handover. README keeps unverified acceptance items unchecked; PROGRESS.md retains the complete engineering history.
+The overnight engineering work ends with this checkpoint; no further unattended gameplay changes are planned. The delivery sequence is final checks, commit/tag push, remote convergence verification and pausing glasswing-finition-de-nuit. README keeps unverified acceptance items unchecked; PROGRESS.md retains the complete engineering history. The next useful work is human playtesting and integration of the delivered media.

@@ -6,7 +6,7 @@ Serve this directory with `python -m http.server 8000`, then open http://localho
 
 For frequent local edits, `python tools/serve.py --port 8000` offers the same static preview with cache disabled. Stop any server already using that port first. No preview server is needed on LOB7.
 
-The current delivery checkpoint and remaining work are in FINAL-REPORT.md. Implementation and acceptance evidence are recorded in PROGRESS.md. Publication on LOB7 is performed separately from claude.ai after delivery of a tagged commit.
+The v0.3.1 morning delivery report and remaining work are in FINAL-REPORT.md. M1, M2 and M3 have their original milestone tags; v0.3.1 includes the overnight polish. Implementation and acceptance evidence are recorded in PROGRESS.md. Publication on LOB7 is performed separately from claude.ai after delivery of a tagged commit.
 
 ## Play
 
