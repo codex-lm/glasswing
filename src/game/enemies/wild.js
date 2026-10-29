@@ -9,6 +9,7 @@ import {F,DIFFICULTY,energyMax} from '../../data/feel.js';
 
 // Sequential collision checks reuse this rectangle; hurt() never retains it.
 const hit={x:0,y:0,w:0,h:0};
+const airMotion={gravity:false},groundMotion={gravity:true};
 
 export function spawnEnemy(s,spawn){
  const e=entity(s.nextId++,spawn.kind,spawn.x,spawn.y||W.spawnY,2,s.config.difficulty);
@@ -36,7 +37,7 @@ export function enemyTick(s,e){
  if(e.flash>0)e.flash--;
  if(e.stun>0){
   e.stun--;e.vx*=W.friction;e.clip='hit';
-  physics(e,s.level,{gravity:e.kind!=='skimmer'});
+  physics(e,s.level,e.kind==='skimmer'?airMotion:groundMotion);
   return;
  }
 
@@ -80,7 +81,7 @@ export function enemyTick(s,e){
   if(e.kind==='skimmer'){e.vy=d.recoverRise;e.vx=-e.facing*d.speed;}
   if(--e.aiTimer<=0){e.ai='idle';e.aiTimer=0;}
  }
- physics(e,s.level,{gravity:e.kind!=='skimmer'});
+ physics(e,s.level,e.kind==='skimmer'?airMotion:groundMotion);
  if(e.y<W.fallY){e.dead=true;e.defeatedFrame=s.frame;}
 }
 

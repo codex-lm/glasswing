@@ -6,11 +6,6 @@ import {hurt,fire,emit} from '../core/combat.js';
 import {physics} from '../core/physics.js';
 import {spawnEnemy} from './enemies/wild.js';
 
-function lastActive(projectiles){
- for(let i=projectiles.length-1;i>=0;i--)if(projectiles[i].active)return projectiles[i];
- return null;
-}
-
 export function spawnBoss(s){
  const e=entity(s.nextId++,'brawler',BOSS.spawnX,BOSS.spawnY,2,s.config.difficulty);
  const health=BOSS.hp*(s.config.mode==='coop'?F.coopHP:1);
@@ -45,14 +40,12 @@ export function bossTick(s,e){
  }else{
   const first=e.aiTimer===BOSS.active;
   if(e.action==='slam'&&first){
-   fire(s,e,false,true);
-   const orb=lastActive(s.projectiles);
+   const orb=fire(s,e,false,true);
    if(orb){orb.y=BOSS.slamY;orb.radius=BOSS.slamRadius;orb.range=BOSS.slamRange;orb.vx=e.facing*BOSS.slamSpeed;}
    emit(s,e.x,1,0xffc77c,18);
   }
   if(e.action==='barrage'&&e.aiTimer%BOSS.barrageInterval===0){
-   fire(s,e,false,true);
-   const orb=lastActive(s.projectiles);
+   const orb=fire(s,e,false,true);
    if(orb)orb.y=BOSS.barrageY+(e.aiTimer%BOSS.barrageLanes)*BOSS.barrageSpacing;
   }
   if(e.action==='summon'&&first){

@@ -1,8 +1,9 @@
 import {F} from '../data/feel.js';
+const normalMotion={};
 export function overlap(a,b){return a.x-a.w/2<b.x+b.w/2&&a.x+a.w/2>b.x-b.w/2&&a.y<b.y+b.h&&a.y+a.h>b.y;}
 export function tile(level,x,y){return level.grid?.[y]?.[x]||0;}
 export function solid(t){return t===1||t===4;}
-export function physics(e,level,{gravity=true,drop=false}={}){
+export function physics(e,level,{gravity=true,drop=false}=normalMotion){
  if(gravity)e.vy=Math.max(-F.terminal,e.vy-F.gravity);
  let motionX=e.vx;if(e.knockFrames>0){const push=e.knockback/e.knockFrames;motionX+=push;e.knockback-=push;e.knockFrames--;}
  const steps=Math.max(1,Math.ceil(Math.max(Math.abs(motionX),Math.abs(e.vy))/F.physicsStep));
