@@ -9,15 +9,15 @@ export function physics(e,level,{gravity=true,drop=false}={}){
  e.grounded=false;
  for(let s=0;s<steps;s++){
   e.x+=motionX/steps;
-  for(let y=Math.floor(e.y+.001);y<=Math.floor(e.y+e.h-.001);y++)for(let x=Math.floor(e.x-e.w/2);x<=Math.floor(e.x+e.w/2);x++)if(solid(tile(level,x,y))){if(motionX>0)e.x=x-e.w/2-.001;else if(motionX<0)e.x=x+1+e.w/2+.001;e.vx=0;motionX=0;}
+  for(let y=Math.floor(e.y+F.collisionSkin);y<=Math.floor(e.y+e.h-F.collisionSkin);y++)for(let x=Math.floor(e.x-e.w/2);x<=Math.floor(e.x+e.w/2);x++)if(solid(tile(level,x,y))){if(motionX>0)e.x=x-e.w/2-F.collisionSkin;else if(motionX<0)e.x=x+1+e.w/2+F.collisionSkin;e.vx=0;motionX=0;}
   const before=e.y;e.y+=e.vy/steps;
-  for(let y=Math.floor(Math.min(before,e.y));y<=Math.floor(e.y+e.h);y++)for(let x=Math.floor(e.x-e.w/2+.001);x<=Math.floor(e.x+e.w/2-.001);x++){
+  for(let y=Math.floor(Math.min(before,e.y));y<=Math.floor(e.y+e.h);y++)for(let x=Math.floor(e.x-e.w/2+F.collisionSkin);x<=Math.floor(e.x+e.w/2-F.collisionSkin);x++){
    const t=tile(level,x,y);const top=t===3?y+Math.max(0,Math.min(1,e.x-x)):y+1;
    if(t===3&&e.vy<=0&&Math.abs(before-top)<=F.slopeStep){e.y=top;e.vy=0;e.grounded=true;}
-   else if((solid(t)||t===2&&!drop||t===3)&&e.vy<=0&&before>=top-.06&&e.y<top){e.y=top;e.vy=0;e.grounded=true;}
-   else if(solid(t)&&e.vy>0&&before+e.h<=y+.05&&e.y+e.h>y){e.y=y-e.h-.001;e.vy=0;}
+   else if((solid(t)||t===2&&!drop||t===3)&&e.vy<=0&&before>=top-F.landTolerance&&e.y<top){e.y=top;e.vy=0;e.grounded=true;}
+   else if(solid(t)&&e.vy>0&&before+e.h<=y+F.ceilingTolerance&&e.y+e.h>y){e.y=y-e.h-F.collisionSkin;e.vy=0;}
   }
  }
- e.x=Math.max(e.w/2,Math.min((level.width||60)-e.w/2,e.x));
+ e.x=Math.max(e.w/2,Math.min((level.width||F.defaultLevelWidth)-e.w/2,e.x));
  if(e.grounded)e.coyote=F.coyote;else e.coyote=Math.max(0,e.coyote-1);
 }
