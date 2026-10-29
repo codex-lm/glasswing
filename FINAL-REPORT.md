@@ -20,7 +20,7 @@ A broken mask gives triple damage, faster movement and free blasts, but the next
 
 ## Evidence
 
-`node tests/run.mjs` passes physics, combat, projectile-pool ownership/exhaustion, parry/reflection, upgrades, levels, safe spawns/checkpoints, saves, local modes, determinism, result cards, GLB fixtures, official vendor hashes, UTF-8, EN/FR parity and package checks. The base package is about 1.72 MB.
+`node tests/run.mjs` passes physics, combat, projectile-pool ownership/exhaustion, parry/reflection, upgrades, levels, safe spawns/checkpoints, saves, local modes, determinism, result cards, GLB fixtures, official vendor hashes, UTF-8, EN/FR parity and package checks. The base package is about 1.73 MB.
 
 Four complete Normal victories are checked into tests/replays and selectable in How to play: Brawler 6,145 frames/3 lives; Skimmer 8,367 frames/2 lives; Spark 9,863 frames/2 lives; Brawler/Spark co-op 6,079 frames/4 lives. These legal inputs come from a full-state-observing bot, not human playtests. The 54-case sweep reaches victory or defeat in every case, without a stalled simulation.
 
@@ -41,6 +41,7 @@ After camera/glow/landmark polish, Edge measured 59.7 fps over 4,560 frames with
 - Help/tutorials now follow saved key mappings, with localized key names. The co-op HUD identifies both players, exposes energy meters and reuses unchanged DOM. UI adapters cover both languages; the remapped Q prompt and both co-op HUDs were checked in the browser without console errors. The original local save/settings were restored and exported identically after QA.
 - Save/replay imports reject invalid playable configurations, empty/invalid checkpoints and nonfinite level transforms before replacing the current run. Damaged optional records are discarded instead of crashing results. Custom levels with arena-prefixed IDs now run solo and pass replay restoration; arbitrary editor-level reachability is still not guaranteed.
 - Editor loads/imports cannot overwrite newer documents or intervening edits, and pre-load input is safe. Browser export comparison confirmed that an invalid import retained the exact edited JSON; undo worked without console errors. Export remains necessary for durable copies of editor work.
+- Touch controls now ignore unrelated pointer releases, cancel guard timers and held state on blur/hidden/menu transitions, require a real double tap and buffer brief blast taps. Controlled pointer/timer regressions pass; physical multi-touch still needs a device test.
 - Replays require their exact commit/tag; later simulation fixes can change old outcomes.
 - Bloom and optional separate online fighting are not included.
 

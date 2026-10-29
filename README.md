@@ -81,3 +81,5 @@ Help and tutorial prompts use the saved solo/P1/P2 bindings in both languages. M
 Imported saves/replays validate playable configuration and custom level structure before replacing current play. Invalid optional best records are discarded; unavailable local storage remains nonfatal. Editor levels named `arena-*` can run solo and survive replay restoration. Structural validation does not establish reachability or difficulty of user-authored levels.
 
 The editor ignores input until a level is available. Painting or undo cancels an older pending load; invalid imports retain the open document. Export JSON for durable copies. Regression tests exercise racing loads and undo; browser exports verified that an invalid import preserved the exact edited level.
+
+Touch adapter regressions cover two-finger ownership, simultaneous independent controls, true double taps, guard timer cancellation, blur/hidden/menu cleanup and brief blast input. Physical phone multi-touch remains unverified.

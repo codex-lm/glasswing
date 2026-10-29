@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 
 import './physics.test.mjs';
 import './input.test.mjs';
+import './touch.test.mjs';
 import './camera.test.mjs';
 import './placeholders.test.mjs';
 
