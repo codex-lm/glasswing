@@ -1,56 +1,87 @@
 # Glasswing — delivery report
 
-Night checkpoint, 29 October 2026. Overnight polish remains active; this report must be refreshed at the morning handover.
+Night checkpoint, 29 October 2026. M1–M3 and seventeen polish passes are available on public main. Morning verification and the final handover are still scheduled; the overnight heartbeat remains active.
+
+Repository: https://github.com/codex-lm/glasswing . Milestone tags: v0.1.0, v0.2.0 and v0.3.0. Later corrections are on main. LOB7 publication has not been performed: the specification assigns it to claude.ai after delivery.
 
 ## What works
 
-M1, M2 and M3 are implemented and tagged v0.1.0, v0.2.0 and v0.3.0. Main also contains later polish. The game includes all three black four-winged kinds, white masks and glass cannon, melee/sword/blasts, guard/parry/reflection, four forest areas, upgrades, secrets, checkpoints, the three-phase boss, local versus in three arenas, co-op revive/leash, touch controls and a JSON level editor. EN/FR, remapping, saves and input replays are included.
+- Solo forest run: four areas, three altars, secrets, checkpoints, upgrades and the three-phase Old Glasswing boss. All three kinds have distinct black four-winged silhouettes, white life masks and selectable eye colours. Spark palms glow while idle.
+- Combat: punch combos, kicks/dive kicks, sword/pogo, charged palm blasts, dodge cancels, directional guard, perfect parry, stun and reflected projectiles. Broken masks give triple damage, faster movement and free blasts, with one fatal hit remaining.
+- Local multiplayer: best-of-three versus in Clearing, Canopy and Hollow; co-op with four shared lives, stronger enemies, independent upgrades, two-second revival and a camera leash.
+- Interface: complete EN/FR, keyboard navigation and remapping, gamepad adapters, responsive touch controls, pause, save/resume, JSON save/replay import/export, results and 1200×630 share cards.
+- Creation and media: JSON level editor, three extra upgrades, procedural characters/forest, manifest-driven GLB and audio loading, original GLB fixtures and diagnostic pages. Real external media remains pending.
 
-The public repository is https://github.com/codex-lm/glasswing . LOB7 publication is a separate claude.ai step, as specified; it has not been performed.
+The simulation uses fixed 60 Hz updates, seeded randomness and recorded input masks. Gameplay tuning and frame data live in src/data. Rendering interpolates separately. The static package has no build step, npm dependencies or runtime external requests; official Three.js r128 files remain unmodified and hash-checked.
 
 ## How to play
 
-Serve the repository with `python -m http.server 8000` and open http://localhost:8000 . No install or build.
+From the repository directory, run `python -m http.server 8000` and open http://localhost:8000 . Use `python tools/serve.py --port 8000` instead for cache-disabled local editing; only one server can use the port. No install or build is needed. Tests require Node 22+.
 
-Solo: arrows/WASD move; Space/W/Up jump again in the air and hold to glide; J punch (move or Down + J kicks); K sword (Down + K in air pogos); L blast on release, hold to charge; Shift/I dodge; U/Ctrl guard and tap before impact to parry; Escape/P pause.
+| Action | Solo keyboard |
+| --- | --- |
+| Move | Arrows or WASD |
+| Jump / air jump / glide | Space, W or Up; press again in air, hold to glide |
+| Punch / kick | J; move or hold Down for kick |
+| Sword / pogo | K; Down + K in air for pogo |
+| Palm blast | L, fired on release; hold to charge |
+| Dodge | Shift or I |
+| Guard / perfect parry | U or Ctrl; tap just before impact |
+| Pause | Escape or P |
 
-Local P1: WASD, Space, F/G/H, R dodge, T guard. P2: arrows, Up, J/K/L, Shift dodge, I guard. Touch is automatic or forced in Options; landscape is clearest. Gamepad mappings are in README.
+Local P1: WASD, Space, F attack, G sword, H blast, R dodge, T guard. P2: arrows, Up jump, J attack, K sword, L blast, Shift dodge, I guard. Both layouts can be remapped in Options.
 
-A broken mask gives triple damage, faster movement and free blasts, but the next hit is fatal. A shard repairs a point. In co-op, stand still beside a downed partner for two seconds to revive them at the cost of one mask point.
+Gamepad: stick/d-pad move; bottom face button jump, left attack, top sword, right blast; right bumper dodge, left bumper guard, Start pause. Menus use up/down for focus, left/right for fields and volume, bottom to confirm, right to go back. One connected pad controls P2 in local multiplayer; two pads map to P1/P2.
 
-## Evidence
+Touch: left zone moves/down; double tap it to dodge. Four right buttons provide jump/glide, hit (hold to guard), sword/pogo and orb (hold to charge). Landscape is clearest. Touch controls P1.
 
-`node tests/run.mjs` passes physics, combat, projectile-pool ownership/exhaustion, parry/reflection, upgrades, levels, safe spawns/checkpoints, saves, local modes, determinism, result cards, GLB fixtures, official vendor hashes, UTF-8, EN/FR parity and package checks. The base package is about 1.75 MB.
+In co-op, stand still beside a downed partner for two seconds with at least one mask point; revival costs that point. Skip a shard to remain a glass cannon, or collect it to repair the mask.
 
-Four complete Normal victories are checked into tests/replays and selectable in How to play: Brawler 6,145 frames/3 lives; Skimmer 8,367 frames/2 lives; Spark 9,863 frames/2 lives; Brawler/Spark co-op 6,079 frames/4 lives. These legal inputs come from a full-state-observing bot, not human playtests. The 54-case sweep reaches victory or defeat in every case, without a stalled simulation.
+How to play offers four verified replays. Options exports/imports saves and opens the level editor. Export editor JSON for a durable copy; Play this level opens a one-level test. Use the recording's exact commit/tag when reporting a replay bug.
 
-After camera/glow/landmark polish, Edge measured 59.7 fps over 4,560 frames with 20 characters, 19 draw calls and 43,336 triangles, without game console errors. Earlier background-browser measurements were invalid. Phone layouts, editor launch and the real GLB fixture-loading page were inspected in browser; the desktop diagnostic is not phone GPU evidence.
+## Verification evidence
 
-## Missing work and known limitations
+`node tests/run.mjs` passes simulation, combat, guard/parry/reflection, projectile-pool recycling, level paths/spawns/checkpoints, local modes, deterministic replay, upgrades, imports, editor races, input adapters, UI, audio lifecycle, GLB fixtures, vendor hashes, UTF-8, EN/FR parity and static packaging checks. The current package is about 1.75 MB: 126 files, with 290 checked static module links resolving inside the package.
 
-- Real Kimi models, Suno music and ElevenLabs recordings are pending. The asset brief, manifests and original GLB fixtures are ready; the default uses procedural art and original oscillator feedback.
-- The 15–25-minute human duration target is unverified. Full-information bots finish much faster; no delays were added to inflate duration.
-- Physical gamepads, keyboard rollover, actual multi-touch and phone GPU performance remain unverified. Input adapters now test held Start, short key taps, sparse one/two-pad mapping, menu focus/selectors/volume and abandoned remapping. Browser export comparisons verified pause freezing and preservation of the saved run through title reload and replay viewing.
-- A fresh safely bound browser session verified radial glow, wind-up poses, four-winged silhouettes, area landmarks and new portrait/landscape touch framing. It caught and fixed an empty-halo shader compile error and inward wings. These halos are not post-process bloom; bloom remains off without demonstrated performance headroom.
-- High aerial players and vertically separated partners now fit through rendering-only camera adjustment. Projection tests and a high/low partner browser scene pass; the camera no longer exposes space below the ground row.
-- Normal/glass loop synchronisation and sound-node lifecycle now have adapter regression coverage, including reused tracks, late metadata and pause cleanup. Actual listening validation awaits delivered recordings.
-- Imported models now preserve hit/parry/telegraph feedback, invincibility blinking, downed-partner visibility and soft shadows. Attack clips follow simulation frames; cloned materials, mixers and GPU skin textures are released on removal. Boss files retain authored tile dimensions. Node regressions and browser fixtures cover these paths; final animation quality still awaits real models.
-- Enemy flight/spacing, boss patterns, run/versus flow, combat/physics tuning and upgrade values are centralized in data. Ordered loops replace temporary entity lists in AI, camera, duel trades and projectile target traversal. The refactor preserved seven dynamic-state traces across 37,845 updates. Combat now reuses impact records, hit lists and physics options; first-use storage, logs, spawns and rendering still allocate, so the zero-allocation target is not established.
-- Fixed boss slams/barrages altering unrelated live projectiles when a pool slot was reused. Boss shots now configure their exact newly created orb, and a full pool spends no energy. Targeted regressions reproduce the original fault and cover exhaustion/recycling. All four recordings retain their winning frame/life totals; intermediate Spark/co-op states change. The post-fix 54-case sweep ends with 40 wins, 14 defeats and zero unfinished runs.
-- Share cards now show the three distinct four-winged kinds, mask state and each co-op player's upgrades. Actual 1200×630 PNG downloads were inspected for three English solo victories and French co-op through tools/results-check.html, using the real export modules and checked legal-input recordings. Title-to-first-fight wall-clock timing remains unverified: automated key-hold timing did not yield a valid live-play sample.
-- Help/tutorials now follow saved key mappings, with localized key names. The co-op HUD identifies both players, exposes energy meters and reuses unchanged DOM. UI adapters cover both languages; the remapped Q prompt and both co-op HUDs were checked in the browser without console errors. The original local save/settings were restored and exported identically after QA.
-- Save/replay imports reject invalid playable configurations, empty/invalid checkpoints and nonfinite level transforms before replacing the current run. Damaged optional records are discarded instead of crashing results. Custom levels with arena-prefixed IDs now run solo and pass replay restoration; arbitrary editor-level reachability is still not guaranteed.
-- Editor loads/imports cannot overwrite newer documents or intervening edits, and pre-load input is safe. Browser export comparison confirmed that an invalid import retained the exact edited JSON; undo worked without console errors. Export remains necessary for durable copies of editor work.
-- Touch controls now ignore unrelated pointer releases, cancel guard timers and held state on blur/hidden/menu transitions, require a real double tap and buffer brief blast taps. Controlled pointer/timer regressions pass; physical multi-touch still needs a device test.
-- Uncached sound effects now respond immediately with procedural feedback, then use the decoded recording on later events. Late decoding cannot play an obsolete hit after pause. Session transitions release active effects/loops; hidden-page pause includes respawn and versus-round transitions. Adapter tests and a browser title/replay/pause/title check pass; real-media listening remains pending.
-- Sound cues now retain simultaneous mask/parry warnings and impacts, with footsteps, missed swings, pogo, blast impacts, mask severity, menus and custom-level victories connected. Bounded/deduplicated event tests and all three sustained-loop tests pass. Seven gameplay/FX/RNG traces remain identical over 37,845 updates when excluding audio fields; actual media mix balance is still unverified.
-- Replays require their exact commit/tag; later simulation fixes can change old outcomes.
-- Bloom and optional separate online fighting are not included.
+Four complete Normal victories are checked into tests/replays and re-executed by the suite:
+
+| Recording | Simulation frames | Lives remaining |
+| --- | ---: | ---: |
+| Brawler | 6,145 | 3 |
+| Skimmer | 8,367 | 2 |
+| Spark | 9,863 | 2 |
+| Brawler + Spark co-op | 6,079 | 4 |
+
+The latest `node tests/sweep.mjs` ran 54 kind/difficulty/seed/mode combinations: 40 victories, 14 defeats, zero unfinished runs and finite player state throughout. These legal-input recordings use a bot with full state visibility. They are regression evidence, not human playtests or proof of the 15–25-minute duration target.
+
+Bound localhost browser checks covered the title/selection/pause flows, explicit no-WebGL fallback, EN/FR remapped help, aerial/co-op framing, telegraphs, glow and landmarks, phone-sized layouts, editor export/import/undo and GLB fixtures. Save/export comparisons confirmed pause freezing and replay isolation; the original saved data was restored. Actual PNG exports were inspected for all three solo kinds in English and co-op in French. The latest normal and explicit no-WebGL title smoke had no console errors. Thrown graphics-context requests and hidden-canvas resize recovery have adapter tests.
+
+The valid foreground Edge benchmark from polish 5 measured 59.7 fps over 4,560 frames with 20 procedural characters, 19 draw calls and 43,336 triangles. It was not rerun after later input/audio/startup fixes. This is developer-machine evidence, not proof of five-year-old laptop or phone performance.
+
+GLB tests and the browser fixture page cover 30 clips, independent skinned clones/materials, hit/parry/telegraph feedback, mask parts, authored boss dimensions, frame-driven clips and disposal. Five browser fixture resets stabilized at 9 geometries and 1 skin texture. Audio adapter tests cover normal/glass phase alignment, late metadata, immediate uncached feedback, simultaneous cue retention, sustained loops and cleanup on pause/session transitions. Real-media listening quality is not established by these tests.
+
+## Missing work, risks and known limits
+
+- Kimi models, Suno music and ElevenLabs recordings have not arrived. ASSETS-BRIEF.md specifies names, clips, formats and budgets; assets/manifest.json is the integration point. Record provenance in ASSETS-LICENSE.md before publication. Current sound feedback is original procedural audio; music remains silent.
+- Human difficulty and the 15–25-minute run target remain unverified. Automated runs finish much faster. Title-to-first-fight under ten seconds also remains unverified because browser-control timing did not produce a valid live-play sample. No artificial waiting was added to inflate duration.
+- Physical gamepad-only play, simultaneous keyboard rollover, real multi-touch and phone GPU performance need device checks. Browser layouts and adapter tests do not substitute for those checks.
+- Post-process bloom remains disabled without demonstrated performance headroom. The visible radial halos are separate effects. Optional experimental online fighting is not included.
+- Hot-loop array churn was reduced and combat/effect records are reused, but logs, spawns, first-use storage and rendering still allocate. The zero-garbage target has not been established.
+- Imported custom levels are checked for valid structure and finite data; arbitrary user-authored levels are not guaranteed reachable or balanced. Editor work requires JSON export for durable copies.
+- Replays need their exact source commit/tag. Simulation bug fixes can change historical outcomes even when the input format stays compatible.
+- Final model silhouettes, animation quality, music crossfades and sound mixing still need review with the actual delivered media.
+
+## Decisions to review
+
+PROGRESS.md records every deviation and specification ambiguity. In particular: the later checkpoint rule overrides area-start respawning; the fourth fragment grants the deferred bonus choice from the third altar when collected in the Nest, without adding a pre-boss altar; Easy/Hard mask damage is fractional to apply their multipliers; versus converts move damage to mask damage so glass-cannon attacks matter. One pad goes to P2 for keyboard-plus-pad play, and four-button touch shares guard with hit and dodge with a double tap.
 
 ## What to look at first
 
-Try Brawler on Normal, deliberately break its mask, and parry a projectile. Compare the three silhouettes and Spark palm glow; inspect a high Skimmer jump chain. Then try Canopy versus and co-op revive/leash. Watch the four verified replays, and inspect tools/level-editor.html, tools/asset-check.html and tools/results-check.html.
+1. Play Brawler on Normal. Deliberately break the mask, repair it with a shard, guard from both sides and parry a projectile. Judge the pace and readability as a human player.
+2. Compare all three silhouettes and idle Spark palms; chain high Skimmer jumps. Try Canopy versus, then co-op revive/leash with two people.
+3. Watch the four reference replays. Inspect tools/diagnostics.html, tools/asset-check.html and tools/results-check.html, then export and test a level with tools/level-editor.html.
+4. Deliver the external media through the manifest, verify provenance, rerun the suite and repeat visual/audio/performance checks before LOB7 publication.
 
-## Overnight continuation
+## Morning handover
 
-The active thread heartbeat `glasswing-finition-de-nuit` continues bounded polish every 30 minutes through the morning of 29 October. Each pass must test, log deviations, commit and push. At the first wake at or after 07:30 Europe/Madrid it should finish verification, refresh this report, verify remote Git convergence, pause itself and deliver the morning handover. PROGRESS.md records the completed passes.
+The heartbeat glasswing-finition-de-nuit remains active. At the first wake at or after 07:30 Europe/Madrid on 29 October, finish the safe pass, refresh this status, run final checks, push and verify zero divergence, optionally tag v0.3.1, pause the heartbeat and deliver the handover. README keeps unverified acceptance items unchecked; PROGRESS.md retains the complete engineering history.

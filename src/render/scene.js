@@ -12,11 +12,47 @@ import {F} from '../data/feel.js';
 import {CAMERA} from '../data/camera.js';
 import {Framing} from './framing.js';
 
+// Capability failures must leave the localized title and menus available.
+export function graphicsContext(canvas){
+ for(const name of ['webgl2','webgl']){
+  try{const context=canvas.getContext(name,{antialias:true});if(context)return context;}
+  catch{}
+ }
+ return null;
+}
+
 export class View{
 
- constructor(canvas,{disabled=false}={}){this.canvas=canvas;this.framing=new Framing();this.available=false;this.entities=[];this.models=new Map();this.realIds=new Set();this.bank=new ModelBank();this.stats={fps:0,calls:0,triangles:0};if(disabled)return;const gl=canvas.getContext('webgl2',{antialias:true})||canvas.getContext('webgl',{antialias:true});if(!gl)return;this.renderer=new T.WebGLRenderer({canvas,context:gl,antialias:true});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));this.renderer.outputEncoding=T.sRGBEncoding;this.scene=new T.Scene();this.scene.background=new T.Color(0xcfe9f2);this.scene.fog=new T.Fog(0xcfe9f2,22,65);this.camera=new T.PerspectiveCamera(CAMERA.fov,1,.1,200);this.scene.add(new T.HemisphereLight(0xe3f6ff,0x496043,.9));const key=new T.DirectionalLight(0xffedc6,.8);key.position.set(-5,12,10);this.scene.add(key);const fill=new T.DirectionalLight(0xa8ddeb,.3);fill.position.set(10,6,-5);this.scene.add(fill);this.characters=new Characters(this.scene);this.fx=new FX(this.scene);this.setGroup=new T.Group();this.scene.add(this.setGroup);this.setInstalled=null;this.forest=new T.Group();this.scene.add(this.forest);this.available=true;this.resize();window.addEventListener('resize',()=>this.resize());}
+ constructor(canvas,{disabled=false}={}){
+  this.canvas=canvas;this.framing=new Framing();this.available=false;this.entities=[];
+  this.models=new Map();this.realIds=new Set();this.bank=new ModelBank();
+  this.stats={fps:0,calls:0,triangles:0};
+  if(disabled)return;
+  const gl=graphicsContext(canvas);
+  if(!gl)return;
+  this.renderer=new T.WebGLRenderer({canvas,context:gl,antialias:true});
+  this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+  this.renderer.outputEncoding=T.sRGBEncoding;
+  this.scene=new T.Scene();this.scene.background=new T.Color(0xcfe9f2);
+  this.scene.fog=new T.Fog(0xcfe9f2,22,65);
+  this.camera=new T.PerspectiveCamera(CAMERA.fov,1,.1,200);
+  this.scene.add(new T.HemisphereLight(0xe3f6ff,0x496043,.9));
+  const key=new T.DirectionalLight(0xffedc6,.8);key.position.set(-5,12,10);this.scene.add(key);
+  const fill=new T.DirectionalLight(0xa8ddeb,.3);fill.position.set(10,6,-5);this.scene.add(fill);
+  this.characters=new Characters(this.scene);this.fx=new FX(this.scene);
+  this.setGroup=new T.Group();this.scene.add(this.setGroup);this.setInstalled=null;
+  this.forest=new T.Group();this.scene.add(this.forest);
+  this.available=true;this.resize();window.addEventListener('resize',()=>this.resize());
+ }
 
- resize(){if(!this.available)return;const w=this.canvas.clientWidth,h=this.canvas.clientHeight;this.width=w;this.height=h;this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();}
+ resize(){
+  if(!this.available)return;
+  this.width=this.canvas.clientWidth;this.height=this.canvas.clientHeight;
+  // Hidden or transitional layouts can briefly report zero-sized canvases.
+  const width=Math.max(1,this.width),height=Math.max(1,this.height);
+  this.renderer.setSize(width,height,false);
+  this.camera.aspect=width/height;this.camera.updateProjectionMatrix();
+ }
 
  setLevel(level){if(!this.available)return;this.level=level;this.setInstalled=null;this.forest.visible=true;for(const child of [...this.setGroup.children]){child.dispose();this.setGroup.remove(child);}for(const m of this.models.values())this.bank.dispose(m);this.models.clear();this.realIds.clear();for(const child of [...this.forest.children]){child.dispose();child.geometry.dispose();child.material.dispose();this.forest.remove(child);}const hollow=level.id==='hollow'||level.id==='arena-hollow',canopy=level.id==='canopy'||level.id==='arena-canopy',nest=level.id==='nest';this.scene.background.set(hollow?0x2a2f4a:nest?0xc9d9bb:canopy?0xd9edf3:0xcfe9f2);this.scene.fog.color.copy(this.scene.background);const batches=new Map();const temp=new T.Object3D();const put=(type,color,x,y,z,sx,sy,sz,rz=0)=>{const key=`${type}-${color}`;if(!batches.has(key))batches.set(key,{type,color,items:[]});batches.get(key).items.push([x,y,z,sx,sy,sz,rz]);};
 

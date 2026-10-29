@@ -4,6 +4,7 @@ import './physics.test.mjs';
 import './input.test.mjs';
 import './touch.test.mjs';
 import './camera.test.mjs';
+import './graphics.test.mjs';
 import './placeholders.test.mjs';
 
 import './combat.test.mjs';
