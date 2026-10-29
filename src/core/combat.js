@@ -8,7 +8,7 @@ export function hurt(s,target,source,damage=1,{projectile=null,stop=F.hitStop,kn
  if(target.dead||target.inv>0||target.dodge>0)return 'immune';
  const front=(impactX-target.x)*target.facing>=0;
  if(target.blocking&&target.grounded&&front){
-  if(target.blockAge<(target.glass?F.glassParry:F.parry)){target.energy=Math.min(energyMax(target),target.energy+2);target.dodgeCd=0;target.flash=F.parryStop;source.stun=F.stun;source.vulnerable=true;s.hitStop=F.parryStop;s.audio='parry';emit(s,target.x,target.y+1,0xffffff,14);if(projectile){projectile.vx=-projectile.vx;projectile.team=target.team;projectile.owner=target.id;projectile.color=target.eye;projectile.hitIds=[];projectile.life=F.orbLifetime;}return 'parry';}
+  if(target.blockAge<(target.glass?F.glassParry:F.parry)){target.energy=Math.min(energyMax(target),target.energy+2);target.dodgeCd=0;target.parryFlash=F.parryStop;source.stun=F.stun;source.vulnerable=true;s.hitStop=F.parryStop;s.audio='parry';emit(s,target.x,target.y+1,0xffffff,14);if(projectile){projectile.vx=-projectile.vx;projectile.team=target.team;projectile.owner=target.id;projectile.color=target.eye;projectile.hitIds=[];projectile.life=F.orbLifetime;}return 'parry';}
   if(target.energy>=1){target.energy--;target.knockback=-target.facing*F.knockback;target.knockFrames=F.knockFrames;s.audio='block';return 'block';}
  }
  if(target.vulnerable){damage*=2;target.vulnerable=false;}

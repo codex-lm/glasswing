@@ -21,7 +21,7 @@ export function movement(e,input,level){
 }
 export function playerTick(s,e,input,targets,resolveAttacks=true){
  if(e.dead)return;
- for(const key of ['inv','stun','flash','dodgeCd','comboTimer'])if(e[key]>0)e[key]--;
+ for(const key of ['inv','stun','flash','parryFlash','dodgeCd','comboTimer'])if(e[key]>0)e[key]--;
  if(e.stun){physics(e,s.level);e.prev=input;return;}
  const block=!!(input&B.block)&&e.grounded;
  if(block){if(!(e.prev&B.block))e.blockAge=0;else e.blockAge++;e.blocking=true;e.move=null;e.charge=0;e.vx*=F.friction;e.clip='block';physics(e,s.level);e.prev=input;return;}
