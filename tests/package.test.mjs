@@ -15,6 +15,8 @@ for(const file of files){
   new TextDecoder('utf-8',{fatal:true}).decode(readFileSync(file));
  if(!/\.(js|mjs|html)$/.test(file))continue;
  const source=readFileSync(file,'utf8');
+ if(file.endsWith('.html'))for(const [,url] of source.matchAll(/(?:src|href)\s*=\s*['"]([^'"]+)['"]/g))
+  assert(!/^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(url),`Nonlocal HTML resource: ${file}: ${url}`);
  if(!file.startsWith('vendor/')&&!file.startsWith('tests/')){
   assert(!activeAPI.test(source),`Forbidden active API: ${file}`);
   assert(!/fetch\s*\(\s*['"]https?:/.test(source),`External fetch: ${file}`);

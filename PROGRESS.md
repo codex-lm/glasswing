@@ -186,3 +186,8 @@ Next: rerun the suite, pin the corrected packaging commit, prove repository cont
 Done: all local tests pass after the packaging correction. The existing LOB7 draft now passes repository preflight at exact commit 3f54229009d0d125b83d60043fcabaade58cedc7, version 0.3.2. Added its public ownership-challenge file to the default branch as requested by the platform. The source/assets/vendor/entrypoint diff from v0.3.1 is empty.
 Deviations: 0.3.2 is a packaging-only revision; no combat, levels, UI, media or gameplay tuning changed. The ownership value is a public control proof, not a credential.
 Next: verify repository ownership, inspect the required platform checks and publish this exact edition when ready.
+
+## LOB7 content check — local favicon
+Done: repository ownership passed; the first preparation stopped before scanning because index.html used a data: URL for its empty favicon. Added an original local four-wing favicon, replaced that URL on all five HTML entry pages, and extended the package check to reject nonlocal HTML resource schemes. Local regression tests remain green.
+Deviations: the platform treats even an empty data: favicon as an unsupported URL scheme. This corrects the package instead of weakening or bypassing its checks. No gameplay behavior changed; the failed candidate was never published.
+Next: pin this correction in the same draft and rerun preparation and required checks.
