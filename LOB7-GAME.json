@@ -2,6 +2,7 @@
   "title": "Glasswing",
   "description": "A fast 3D side-scrolling forest action game designed by Charles. Four black wings, a white mask, a needle-sword. When your mask breaks, become a glass cannon. Solo and two players on one keyboard. English and French.",
   "entrypoint": "index.html",
+  "cover": "assets/cover-combat.png",
   "license": "MIT",
   "genre": ["Action", "Platformer", "Fighting"],
   "themes": ["Forest", "Monsters", "Local co-op", "Versus"],
