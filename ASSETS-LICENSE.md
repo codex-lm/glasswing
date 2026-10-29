@@ -4,7 +4,7 @@ Designed by Charles. Produced by Cédric Bernadac. Code and procedural geometry 
 
 No third-party character models, music, or sound recordings have been delivered. The game uses original procedural shapes. Do not attribute these to Kimi, Suno or ElevenLabs.
 
-`assets/cover-combat.png` is an original 1280 × 720 gameplay capture of the default procedural renderer, MIT. It shows frame 9859 of `tests/replays/normal-spark.json` in the Nest, reproduced from the v0.3.2 simulation. The image is cropped around the aerial boss fight; no characters, effects or scenery were added. The HUD is omitted. `LOB7-GAME.json` declares this author image for the next LOB7 edition.
+`assets/cover-combat.png` is an original 1280 × 720 gameplay capture of the default procedural renderer, MIT. It shows frame 9859 of `tests/replays/normal-spark.json` in the Nest, reproduced from the v0.3.2 simulation. The image is cropped around the aerial boss fight; no characters, effects or scenery were added. The HUD is omitted. `LOB7-GAME.json` declares this author image, published with LOB7 edition 0.3.3.
 
 Future original Blender models supplied by Kimi K3.1 under the direction of Charles and Cédric Bernadac are intended for CC0-1.0. Confirm that dedication for each actual delivery before adding it. Store sources on dev-assets, not main.
 
