@@ -4,7 +4,7 @@ A fast 2.5D forest action game designed by Charles. Four black wings, a white ma
 
 Serve this directory with `python -m http.server 8000`, then open http://localhost:8000 . No install or build. Run tests with Node 22+ using `node tests/run.mjs`.
 
-For frequent local edits, `python tools/serve.py --port 8000` offers the same static preview with cache disabled. Stop any server already using that port first. No preview server is needed on LOB7.
+Developer-only Python tools (cache-disabled preview and GLB fixture regeneration) are preserved on the [dev-assets branch](https://github.com/codex-lm/glasswing/tree/dev-assets/tools). LOB7 rejects Python files in its static package, so these utilities are excluded from main. The standard Python HTTP server above still serves the game without installation.
 
 The v0.3.1 morning delivery report and remaining work are in FINAL-REPORT.md. M1, M2 and M3 have their original milestone tags; v0.3.1 includes the overnight polish. Implementation and acceptance evidence are recorded in PROGRESS.md. LOB7 publication was authorized after handover and is pending account recovery; see FINAL-REPORT.md for its status.
 
@@ -88,4 +88,4 @@ An uncached effect gives immediate procedural feedback while its recording decod
 
 Sound events now preserve mask/parry warnings alongside impacts, with a reused eight-cue frame buffer and per-frame deduplication. Steps, missed swings, pogo, blast impacts, mask severity, menus and custom-level wins are connected; delivery keys live in `src/data/audio.js`. `node tests/trace.mjs --gameplay` excludes only audio fields: seven traces matched across 37,845 updates after this presentation change. Full traces still include audio by default.
 
-Graphics startup tolerates denied or missing contexts and tries WebGL fallback before leaving the localized menus usable. Temporarily hidden canvases keep a finite projection. Browser smoke passed with normal rendering and explicit `?no-webgl=1`; adapter tests cover thrown context requests and zero-size resize recovery. The current base package is approximately 1.75 MB, with 126 files and 290 checked static module links resolving locally.
+Graphics startup tolerates denied or missing contexts and tries WebGL fallback before leaving the localized menus usable. Temporarily hidden canvases keep a finite projection. Browser smoke passed with normal rendering and explicit `?no-webgl=1`; adapter tests cover thrown context requests and zero-size resize recovery. The base package is approximately 1.75 MB, with 290 checked static module links resolving locally.

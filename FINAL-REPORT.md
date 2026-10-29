@@ -16,7 +16,7 @@ The simulation uses fixed 60 Hz updates, seeded randomness and recorded input ma
 
 ## How to play
 
-From the repository directory, run `python -m http.server 8000` and open http://localhost:8000 . Use `python tools/serve.py --port 8000` instead for cache-disabled local editing; only one server can use the port. No install or build is needed. Tests require Node 22+.
+From the repository directory, run `python -m http.server 8000` and open http://localhost:8000 . No install or build is needed. Tests require Node 22+. The optional cache-disabled preview and GLB-generation Python utilities are preserved on dev-assets; LOB7's static package rejects Python files, so main excludes them.
 
 | Action | Solo keyboard |
 | --- | --- |
@@ -41,7 +41,7 @@ How to play offers four verified replays. Options exports/imports saves and open
 
 ## Verification evidence
 
-`node tests/run.mjs` passes simulation, combat, guard/parry/reflection, projectile-pool recycling, level paths/spawns/checkpoints, local modes, deterministic replay, upgrades, imports, editor races, input adapters, UI, audio lifecycle, GLB fixtures, vendor hashes, UTF-8, EN/FR parity and static packaging checks. The current package is about 1.75 MB: 126 files, with 290 checked static module links resolving inside the package.
+`node tests/run.mjs` passes simulation, combat, guard/parry/reflection, projectile-pool recycling, level paths/spawns/checkpoints, local modes, deterministic replay, upgrades, imports, editor races, input adapters, UI, audio lifecycle, GLB fixtures, vendor hashes, UTF-8, EN/FR parity and static packaging checks. The package is about 1.75 MB, with 290 checked static module links resolving inside the package. The morning checkpoint had 126 files; the LOB7 packaging correction removes two developer-only Python files without changing gameplay or generated assets.
 
 Four complete Normal victories are checked into tests/replays and re-executed by the suite:
 

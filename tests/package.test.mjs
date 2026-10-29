@@ -29,6 +29,7 @@ for(const file of files){
  }
 }
 assert(!files.includes('package.json'));
+assert(!files.some(file=>/\.(py|blend)$/i.test(file)),'Developer-only source belongs on dev-assets, outside the LOB7 package');
 assert(!files.some(file=>file.startsWith('SPEC-')));
 assert(files.length<500);
 assert(size<3000000,`Base package ${size} exceeds 3 MB`);
