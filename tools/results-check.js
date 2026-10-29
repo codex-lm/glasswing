@@ -4,6 +4,7 @@ import {loadLevels} from '../src/game/level.js';
 import {record,validateReplay} from '../src/core/replay.js';
 import {resultsHTML,shareCard,download} from '../src/ui/results.js';
 import {createShareCard} from '../src/ui/share-card.js';
+import {REPLAY_FILES} from '../src/data/resources.js';
 
 let levels;
 const recordings=['normal-brawler','normal-skimmer','normal-spark','coop-brawler-spark'];
@@ -19,7 +20,7 @@ async function render(){
  const locale=document.querySelector('#language');locale.value=language;
  locale.onchange=()=>{setLanguage(locale.value);refresh();};
  if(!cache.has(selection)){
-  const response=await fetch('../tests/replays/'+selection+'.json');
+  const response=await fetch(REPLAY_FILES[selection]);
   if(!response.ok)throw new Error('Missing checked replay');
   const replay=validateReplay(await response.json()),state=createRun(levels,replay.config);
   for(const [n,a,b] of replay.inputs)for(let i=0;i<n;i++)tick(state,[a,b]);

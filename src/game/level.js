@@ -1,15 +1,17 @@
+import {LEVEL_FILES} from '../data/resources.js';
 export const LEVEL_IDS=['landing','canopy','hollow','nest'];
 
-async function loadLevel(path){
- const response=await fetch(new URL(path,import.meta.url));
+export async function loadLevel(id){
+ if(!Object.hasOwn(LEVEL_FILES,id))throw new Error('Unknown level');
+ const response=await fetch(LEVEL_FILES[id]);
  if(!response.ok)throw new Error('Local level unavailable');
  return validateLevel(await response.json());
 }
 export function loadLevels(){
- return Promise.all(LEVEL_IDS.map(id=>loadLevel(`../data/levels/${id}.json`)));
+ return Promise.all(LEVEL_IDS.map(loadLevel));
 }
 export function loadArenas(){
- return Promise.all(['clearing','canopy','hollow'].map(id=>loadLevel(`../data/levels/arenas/${id}.json`)));
+ return Promise.all(['arena-clearing','arena-canopy','arena-hollow'].map(loadLevel));
 }
 
 const inRange=(value,min,max)=>Number.isFinite(value)&&value>=min&&value<=max;

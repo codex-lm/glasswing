@@ -19,6 +19,7 @@ import {KINDS} from './data/kinds.js';
 import {loadLevels,loadArenas,validateLevel} from './game/level.js';
 
 import {record,validateReplay,ReplayCursor} from './core/replay.js';
+import {REPLAY_FILES} from './data/resources.js';
 
 import {loadSave,save,captureCurrent} from './core/save.js';
 
@@ -69,7 +70,7 @@ async function watchReplay(){
  try{
   const choice=document.querySelector('#replay-choice')?.value;
   const name=['normal-brawler','normal-skimmer','normal-spark','coop-brawler-spark'].includes(choice)?choice:'normal-brawler';
-  const response=await fetch('./tests/replays/'+name+'.json');
+  const response=await fetch(REPLAY_FILES[name]);
   if(!response.ok)throw new Error('Missing replay');
   const replay=validateReplay(await response.json());
   if(screens.revision!==revision)return;

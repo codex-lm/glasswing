@@ -2,6 +2,10 @@ import assert from 'node:assert/strict';
 import {readFileSync,statSync,existsSync} from 'node:fs';
 import {resolve,relative,dirname} from 'node:path';
 import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {LEVEL_FILES,REPLAY_FILES} from '../src/data/resources.js';
+import {validateLevel} from '../src/game/level.js';
+import {validateReplay} from '../src/core/replay.js';
 
 const root=process.cwd();
 const files=execFileSync('git',['ls-files','--cached','--others','--exclude-standard'],{encoding:'utf8'})
@@ -37,4 +41,12 @@ assert(files.length<500);
 assert(size<3000000,`Base package ${size} exceeds 3 MB`);
 const manifest=JSON.parse(readFileSync('LOB7-GAME.json','utf8'));
 assert.equal(manifest.entrypoint,'index.html');assert(files.includes(manifest.entrypoint));
+for(const [catalog,validate] of [[LEVEL_FILES,validateLevel],[REPLAY_FILES,validateReplay]])
+ for(const url of Object.values(catalog)){
+  const path=fileURLToPath(url);
+  assert(!relative(root,path).startsWith('..'),'Resource stays inside the package');
+  validate(JSON.parse(readFileSync(url,'utf8')));
+ }
+const attributes=readFileSync('.gitattributes','utf8');
+assert(/^tests\/\*\.mjs export-ignore$/m.test(attributes),'Node tests stay outside the browser archive');
 console.log(`PASS package: ${files.length} files, ${size} bytes, ${modules} resolved module links; local-only active APIs`);

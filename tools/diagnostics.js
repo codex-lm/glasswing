@@ -2,13 +2,11 @@ import {View} from '../src/render/scene.js';
 import {entity} from '../src/core/entity.js';
 import {testLevel} from '../src/data/test-level.js';
 import {t} from '../src/ui/i18n.js';
+import {loadLevel,LEVEL_IDS} from '../src/game/level.js';
 
 const params=new URLSearchParams(location.search),pose=params.get('pose');
 let level=testLevel;
-if(['landing','canopy','hollow','nest'].includes(params.get('area'))) {
- const response=await fetch('../src/data/levels/'+params.get('area')+'.json');
- if(response.ok)level=await response.json();
-}
+if(LEVEL_IDS.includes(params.get('area')))level=await loadLevel(params.get('area'));
 const view=new View(document.querySelector('#world'));view.setLevel(level);
 const count=pose==='air'?2:20;
 const players=Array.from({length:count},(_,i)=>entity(i,['brawler','skimmer','spark'][i%3],2+i%10*1.5,1+Math.floor(i/10)*2,i%2));

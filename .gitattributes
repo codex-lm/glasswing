@@ -3,3 +3,6 @@
 *.glb binary
 *.png binary
 *.ogg binary
+# Node-only regression harness stays in git clones, outside the browser archive.
+# JSON replays remain included: the game and its diagnostics load them directly.
+tests/*.mjs export-ignore

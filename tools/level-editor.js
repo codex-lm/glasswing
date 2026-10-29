@@ -1,6 +1,6 @@
 import {t,setLanguage} from '../src/ui/i18n.js';
 import {loadSave} from '../src/core/save.js';
-import {validateLevel} from '../src/game/level.js';
+import {loadLevel,validateLevel} from '../src/game/level.js';
 import {download} from '../src/ui/results.js';
 import {EditorSession} from './editor-session.js';
 
@@ -8,7 +8,7 @@ setLanguage(loadSave().settings.language);
 const root=document.querySelector('#editor'),session=new EditorSession();
 let brush='1',painting=false;
 const brushes=['0','1','2','3','4','5','start','end','checkpoint','fragment','mask','brawler','skimmer','spark','tree-1','fern','mushroom','altar'];
-root.innerHTML=`<div class="eyebrow">${t('title')}</div><h1>${t('editor')}</h1><p>${t('editorIntro')}</p><div class="toolbar"><label>${t('loadArea')}<select id="area">${['landing','canopy','hollow','nest'].map(id=>`<option value="${id}">${t(id)}</option>`).join('')}</select></label><button id="load">${t('load')}</button><label>${t('brush')}<select id="brush">${brushes.map(id=>`<option value="${id}">${t('brush_'+id)}</option>`).join('')}</select></label><button id="undo">${t('undo')}</button><button id="export">${t('exportLevel')}</button><label>${t('importLevel')}<input type="file" id="import" accept=".json"></label><button id="test" class="primary">${t('testLevel')}</button><a href="../index.html">${t('home')}</a></div><p id="editor-status"></p><div class="viewport"><canvas id="grid" width="1440" height="240" tabindex="0" aria-label="${t('levelGrid')}"></canvas></div><p id="coordinates"></p><p>${t('editorKeys')}</p>`;
+root.innerHTML=`<div class="eyebrow">${t('title')}</div><h1>${t('editor')}</h1><p>${t('editorIntro')}</p><div class="toolbar"><label>${t('loadArea')}<select id="area">${['landing','canopy','hollow','nest'].map(id=>`<option value="${id}">${t(id)}</option>`).join('')}</select></label><button id="load">${t('load')}</button><label>${t('brush')}<select id="brush">${brushes.map(id=>`<option value="${id}">${t('brush_'+id)}</option>`).join('')}</select></label><button id="undo">${t('undo')}</button><button id="export">${t('exportLevel')}</button><label>${t('importLevel')}<input type="file" id="level-file-input" accept=".json"></label><button id="test" class="primary">${t('testLevel')}</button><a href="../index.html">${t('home')}</a></div><p id="editor-status"></p><div class="viewport"><canvas id="grid" width="1440" height="240" tabindex="0" aria-label="${t('levelGrid')}"></canvas></div><p id="coordinates"></p><p>${t('editorKeys')}</p>`;
 const canvas=document.querySelector('#grid'),ctx=canvas.getContext('2d');
 const status=document.querySelector('#editor-status'),cell=24;
 const colors=['#cfe9f2','#3f7d4f','#a9d68a','#d3c48a','#b6956d','#79e0c8'];
@@ -76,9 +76,7 @@ function accept(level,revision){
 async function load(id){
  const revision=session.beginLoad();painting=false;status.textContent=t('loading');
  try{
-  const response=await fetch(`../src/data/levels/${id}.json`);
-  if(!response.ok)throw new Error('Missing level');
-  accept(await response.json(),revision);
+  accept(await loadLevel(id),revision);
  }catch{if(revision===session.revision)status.textContent=t('invalidLevel');}
 }
 function pointerPaint(event,erase){
@@ -121,7 +119,7 @@ document.querySelector('#export').onclick=()=>{
   download(JSON.stringify(level,null,2),`${level.id}.json`);status.textContent=t('editorExported');
  }catch{status.textContent=t('invalidLevel');}
 };
-document.querySelector('#import').onchange=async event=>{
+document.querySelector('#level-file-input').onchange=async event=>{
  const file=event.target.files[0];
  if(!file)return;
  const revision=session.beginLoad();painting=false;status.textContent=t('loading');
