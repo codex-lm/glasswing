@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glasswing</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../styles.css?v=0.3.1">
+<style>
+ body{height:auto;overflow:auto;padding:24px}
+ main{max-width:1200px;margin:auto}
+ h1{font-size:36px;letter-spacing:0;color:#173d30}
+ .row{color:#173d30}
+ #preview canvas{width:100%;height:auto;border-radius:20px;display:block;margin:24px 0}
+ #result .panel{max-width:none;max-height:none}
+</style>
+<main>
+ <h1 id="title"></h1>
+ <div class="row" id="controls"></div>
+ <div id="preview"></div>
+ <div id="result"></div>
+</main>
+<script type="module" src="./results-check.js"></script>
+</html>
