@@ -181,3 +181,8 @@ Next: after sign-in, inspect the account and existing drafts, prove repository c
 Done: the user completed sign-in and explicitly confirmed publication. The connected codex-lm account had no projects; created draft bd_s_328480ea-e38b-4aa4-8ae5-74a30f7317d9. Its preflight rejected only tools/make-fixtures.py and tools/serve.py. Preserved both unchanged on the public dev-assets branch before removing them from main; updated provenance and local-preview instructions and added a package regression against Python/Blender source. Generated GLBs and game code are unchanged.
 Deviations: the earlier local package audit allowed Python utility files that LOB7 does not accept. This corrects that mismatch, preserving developer source on the branch already designated for source assets. Reuse the existing draft; no duplicate edition or replacement account.
 Next: rerun the suite, pin the corrected packaging commit, prove repository control and finish the platform's required checks before publication.
+
+## LOB7 repository proof — preflight passed
+Done: all local tests pass after the packaging correction. The existing LOB7 draft now passes repository preflight at exact commit 3f54229009d0d125b83d60043fcabaade58cedc7, version 0.3.2. Added its public ownership-challenge file to the default branch as requested by the platform. The source/assets/vendor/entrypoint diff from v0.3.1 is empty.
+Deviations: 0.3.2 is a packaging-only revision; no combat, levels, UI, media or gameplay tuning changed. The ownership value is a public control proof, not a credential.
+Next: verify repository ownership, inspect the required platform checks and publish this exact edition when ready.

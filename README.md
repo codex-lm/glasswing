@@ -6,7 +6,7 @@ Serve this directory with `python -m http.server 8000`, then open http://localho
 
 Developer-only Python tools (cache-disabled preview and GLB fixture regeneration) are preserved on the [dev-assets branch](https://github.com/codex-lm/glasswing/tree/dev-assets/tools). LOB7 rejects Python files in its static package, so these utilities are excluded from main. The standard Python HTTP server above still serves the game without installation.
 
-The v0.3.1 morning delivery report and remaining work are in FINAL-REPORT.md. M1, M2 and M3 have their original milestone tags; v0.3.1 includes the overnight polish. Implementation and acceptance evidence are recorded in PROGRESS.md. LOB7 publication was authorized after handover and is pending account recovery; see FINAL-REPORT.md for its status.
+The v0.3.1 morning delivery report and remaining work are in FINAL-REPORT.md. M1, M2 and M3 have their original milestone tags; v0.3.1 includes the overnight polish. Implementation and acceptance evidence are recorded in PROGRESS.md. LOB7 publication was authorized after handover; version 0.3.2 corrects only static packaging and is passing through publication checks. See FINAL-REPORT.md for its status.
 
 ## Play
 

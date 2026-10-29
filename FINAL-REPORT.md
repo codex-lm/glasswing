@@ -2,7 +2,7 @@
 
 Morning handover, 29 October 2026. M1–M3 and seventeen polish passes are complete for the available procedural assets. The v0.3.1 checkpoint contains the overnight corrections and this delivery report. The missing media and unverified acceptance items below remain open.
 
-Repository: https://github.com/codex-lm/glasswing . Milestone tags: v0.1.0, v0.2.0 and v0.3.0; verified polish checkpoint: https://github.com/codex-lm/glasswing/tree/v0.3.1 . After handover, the user explicitly authorized Codex to publish on LOB7, overriding the original claude.ai reservation. Publication is pending account recovery; no LOB7 draft or edition has been created in this session.
+Repository: https://github.com/codex-lm/glasswing . Milestone tags: v0.1.0, v0.2.0 and v0.3.0; verified polish checkpoint: https://github.com/codex-lm/glasswing/tree/v0.3.1 . After handover, the user explicitly authorized Codex to publish on LOB7, overriding the original claude.ai reservation, and completed account recovery. Draft bd_s_328480ea-e38b-4aa4-8ae5-74a30f7317d9 passed repository preflight at 3f54229009d0d125b83d60043fcabaade58cedc7. Version 0.3.2 removes only developer Python files from the static package; publication checks remain pending.
 
 ## What works
 
