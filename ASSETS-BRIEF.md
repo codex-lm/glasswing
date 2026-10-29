@@ -4,7 +4,7 @@ All deliveries are optional: the procedural game stays playable. Paths below are
 
 ## 1. Kimi K3.1 — 3D models
 
-Export binary glTF 2.0 (.glb), Blender baked animations at 24 fps, +X forward, +Y up, origin at feet, 1 unit = 1 tile. No Draco, KTX2, meshopt, external URIs, WASM or decoder. Embedded PNG/JPG only. Flat materials, no character textures. Eye/palm materials named `eyes` / `palms`, independently recolourable. Body `body`, mask mesh `mask`, cracks `crack1`, `crack2`, `crack3`, eight shard meshes `shard1` … `shard8`, elite `halfmask`. Four separate wing bones. No lights/cameras required. Keep a friendly cartoon silhouette.
+Export binary glTF 2.0 (.glb), Blender baked animations at 24 fps, +X forward, +Y up, origin at feet, 1 unit = 1 tile. Apply rig/object scale before baking and export; test deformation after reopening the GLB. No Draco, KTX2, meshopt, external URIs, WASM or decoder. Embedded PNG/JPG only. Flat materials, no character textures. Eye/palm materials named `eyes` / `palms`, independently recolourable. Body `body`, mask mesh `mask`, cracks `crack1`, `crack2`, `crack3`, eight shard meshes `shard1` … `shard8`, elite `halfmask`. Four separate wing bones. No lights/cameras required. Keep a friendly cartoon silhouette.
 
 | Files | Budget and shape |
 | --- | --- |
@@ -17,7 +17,7 @@ Export binary glTF 2.0 (.glb), Blender baked animations at 24 fps, +X forward, +
 | sets/arena-clearing.glb, arena-canopy.glb, arena-hollow.glb | one-screen sets, same conventions |
 | key/landing.webp | 1920×1080, Glasswing in crater, wings spread; no baked text |
 
-Player clips (exact): idle, run, jump, doublejump, glide, punch1, punch2, punch3, kick, divekick, sword, downsword, blast, charge, dodge, hit, maskbreak, glassidle, beaten. Add block and parry clips if available; otherwise the procedural stance remains. Each delivered attack must fit the frame-data window (not drive it).
+Player clips (exact): idle, run, jump, doublejump, glide, punch1, punch2, punch3, kick, divekick, sword, downsword, blast, charge, dodge, hit, maskbreak, glassidle, beaten. Add block and parry clips if available; otherwise the procedural stance remains. Each delivered attack is retimed to the simulation frame-data window and never drives collision. Missing optional block clips use the procedural guard stance. Mask, cracks, halfmask and shards must be independently visible sibling nodes (do not parent shards beneath the hidden mask). The boss file is already three times taller in tile units: runtime adds no second size multiplier.
 
 Wild clips: idle, move, telegraph, attack, hit, beaten. Boss clips: idle, slam, sweep, barrage, summon, rush, lunge, telegraph, maskbreak, glassidle, beaten. Phase 1 slam/sweep, phase 2 barrage/summon, phase 3 rush/lunge.
 

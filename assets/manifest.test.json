@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "models": {"brawler":"assets/test/dummy-character.glb","skimmer":"assets/test/dummy-character.glb","spark":"assets/test/dummy-character.glb","wild-brawler":"assets/test/dummy-character.glb","wild-skimmer":"assets/test/dummy-character.glb","wild-spark":"assets/test/dummy-character.glb","old-glasswing":"assets/test/dummy-character.glb"},
+  "models": {"brawler":"assets/test/dummy-character.glb","skimmer":"assets/test/dummy-character.glb","spark":"assets/test/dummy-character.glb","wild-brawler":"assets/test/dummy-character.glb","wild-skimmer":"assets/test/dummy-character.glb","wild-spark":"assets/test/dummy-character.glb","old-glasswing":"assets/test/dummy-boss.glb"},
   "sets": {"landing":"assets/test/dummy-set.glb","canopy":"assets/test/dummy-set.glb","hollow":"assets/test/dummy-set.glb","nest":"assets/test/dummy-set.glb","arena-clearing":"assets/test/dummy-set.glb","arena-canopy":"assets/test/dummy-set.glb","arena-hollow":"assets/test/dummy-set.glb"},
   "music": {}, "sounds": {}
 }

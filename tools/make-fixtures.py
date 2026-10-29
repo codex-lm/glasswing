@@ -5,7 +5,7 @@ import json, struct
 out = Path(__file__).resolve().parents[1] / 'assets' / 'test'
 out.mkdir(parents=True, exist_ok=True)
 
-def fixture(is_set=False):
+def fixture(is_set=False, boss=False):
     data = bytearray()
     views, accessors = [], []
     def accessor(values, fmt, component, shape, minimum=None, maximum=None):
@@ -18,7 +18,8 @@ def fixture(is_set=False):
         if minimum is not None: a['min'] = minimum; a['max'] = maximum
         accessors.append(a)
         return len(accessors)-1
-    pos = accessor([-.5,-.5,-.5,.5,-.5,-.5,.5,.5,-.5,-.5,.5,-.5,-.5,-.5,.5,.5,-.5,.5,.5,.5,.5,-.5,.5,.5], 'f', 5126, 'VEC3', [-.5]*3,[.5]*3)
+    vertices = [-.5,-.5,-.5,.5,-.5,-.5,.5,.5,-.5,-.5,.5,-.5,-.5,-.5,.5,.5,-.5,.5,.5,.5,.5,-.5,.5,.5]
+    pos = accessor(vertices, 'f', 5126, 'VEC3', [-.5]*3,[.5]*3)
     idx = accessor([0,2,1,0,3,2,4,5,6,4,6,7,0,1,5,0,5,4,2,3,7,2,7,6,1,2,6,1,6,5,3,0,4,3,4,7], 'H', 5123, 'SCALAR')
     joints = accessor([0,0,0,0]*8, 'H', 5123, 'VEC4')
     weights = accessor([1,0,0,0]*8, 'f', 5126, 'VEC4')
@@ -26,13 +27,22 @@ def fixture(is_set=False):
     times = accessor([0,.5,1], 'f', 5126, 'SCALAR',[0],[1])
     translation = accessor([0,0,0,0,.05,0,0,0,0], 'f', 5126, 'VEC3')
     materials = [{'name': n, 'pbrMetallicRoughness': {'baseColorFactor': c, 'metallicFactor': 0,'roughnessFactor':1}, 'extensions':{'KHR_materials_unlit':{}}} for n,c in [('body',[.043,.043,.051,1]),('mask',[.945,.925,.886,1]),('eyes',[1,.54,.24,1]),('palms',[1,.54,.24,1]),('forest',[.35,.65,.35,1])]]
+    for material in materials:
+        if material['name'] in ('eyes', 'palms'):
+            del material['extensions']
+            material['emissiveFactor'] = [1, .54, .24]
     nodes = [{'name':'fixture','children':[1]},{'name':'body-bone'}]
     meshes=[]
     def mesh(name, material, position, scale, skin=False):
+        factor = 3 if boss else 1
         attrs={'POSITION':pos}
-        if skin: attrs.update(JOINTS_0=joints,WEIGHTS_0=weights)
+        if skin:
+            # Skin vertices live in bind space; a mesh-node scale is not a rig bake.
+            baked = [(value*scale[i%3]+position[i%3])*factor for i,value in enumerate(vertices)]
+            bounds = [[min(baked[axis::3]),max(baked[axis::3])] for axis in range(3)]
+            attrs.update(POSITION=accessor(baked,'f',5126,'VEC3',[b[0] for b in bounds],[b[1] for b in bounds]),JOINTS_0=joints,WEIGHTS_0=weights)
         meshes.append({'name':name,'primitives':[{'attributes':attrs,'indices':idx,'material':material}]})
-        node={'name':name,'mesh':len(meshes)-1,'translation':position,'scale':scale}
+        node={'name':name,'mesh':len(meshes)-1,'translation':[0,0,0] if skin else [v*factor for v in position],'scale':[1,1,1] if skin else [v*factor for v in scale]}
         if skin: node['skin']=0
         nodes[0]['children'].append(len(nodes));nodes.append(node)
     if is_set:
@@ -52,7 +62,7 @@ def fixture(is_set=False):
     encoded+=b' '*(-len(encoded)%4);data+=b'\0'*(-len(data)%4)
     size=12+8+len(encoded)+8+len(data)
     result=struct.pack('<III',0x46546c67,2,size)+struct.pack('<II',len(encoded),0x4e4f534a)+encoded+struct.pack('<II',len(data),0x004e4942)+data
-    (out/('dummy-set.glb' if is_set else 'dummy-character.glb')).write_bytes(result)
+    (out/('dummy-set.glb' if is_set else 'dummy-boss.glb' if boss else 'dummy-character.glb')).write_bytes(result)
 
-fixture();fixture(True)
+fixture();fixture(True);fixture(boss=True)
 print('Generated original character/animation/skin/material and named-set GLB fixtures.')

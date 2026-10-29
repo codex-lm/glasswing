@@ -1,6 +1,7 @@
 import * as T from '../../vendor/build/three.module.js';
 import {KINDS} from '../data/kinds.js';
-import {PALETTE} from '../data/feel.js';
+import {F, PALETTE} from '../data/feel.js';
+import {VISUALS as V} from '../data/visuals.js';
 
 // Instanced parts share draw calls. Poses never alter collision bodies.
 export class Characters {
@@ -29,15 +30,19 @@ export class Characters {
  draw(entities,alpha,frame,realModels) {
   for(const part of Object.values(this.parts))part.n=0;
   for(const e of entities) {
-   if(realModels?.has(e.id)||e.dead&&e.team===2&&frame-e.defeatedFrame>50)continue;
-   const k=KINDS[e.kind],size=e.boss?3:e.showcase?2.2:1,x=e.px+(e.x-e.px)*alpha;
+   if(e.dead&&e.team===2&&frame-e.defeatedFrame>V.defeatedLife)continue;
+   const k=KINDS[e.kind],size=e.boss?F.bossSize:e.showcase?V.showcaseScale:1,x=e.px+(e.x-e.px)*alpha;
    let y=e.py+(e.y-e.py)*alpha;
+   if(realModels?.has(e.id)){
+    if(!e.inv||e.dead||!(Math.floor(frame/V.blinkFrames)%2))this.add('shadow',x,1.015,-.05,k.bodyWidth*size*.8,k.bodyWidth*size*.4,1,0,null,-Math.PI/2);
+    continue;
+   }
    const h=k.height*size,w=k.bodyWidth*size,f=e.facing,walk=e.clip==='run'||e.clip==='move',phase=frame*.2;
    const winding=e.ai==='telegraph',guard=e.blocking,curl=e.dead,crouch=curl?.38:winding?.16:e.kind==='brawler'?.04:0;
    const bob=walk?Math.abs(Math.sin(phase))*.035:Math.sin(frame*.035)*.015;
-   if(e.dead&&e.team===2)y+=(frame-e.defeatedFrame)*.025;
-   if(e.inv&&Math.floor(frame/4)%2)continue;
-   const body=e.flash>0?0xffffff:PALETTE.body,eye=winding&&Math.floor(frame/3)%2?0xffffff:e.eye;
+   if(e.dead&&e.team===2)y+=(frame-e.defeatedFrame)*V.defeatedRise;
+   if(e.inv&&!e.dead&&Math.floor(frame/V.blinkFrames)%2)continue;
+   const body=e.flash>0?0xffffff:PALETTE.body,eye=winding&&Math.floor(frame/V.telegraphBlink)%2?0xffffff:e.eye;
    const lean=e.clip==='dodge'?.35*f:winding?-.18*f:e.move?.14*f:0,headX=x+f*w*.16+lean,headY=y+h*(.82-crouch)+bob;
    this.add('body',x,y+h*(.5-crouch*.65)+bob,0,w*.55,h*.3,w*.35,curl?1.3:lean,body);
    this.add('body',headX,headY,0,w*.53,h*.25,w*.4,curl?.5*f:0,body);

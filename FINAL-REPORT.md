@@ -20,7 +20,7 @@ A broken mask gives triple damage, faster movement and free blasts, but the next
 
 ## Evidence
 
-`node tests/run.mjs` passes physics, combat, parry/reflection, upgrades, levels, safe spawns/checkpoints, saves, local modes, determinism, GLB fixtures, official vendor hashes, UTF-8, EN/FR parity and package checks. The base package is about 1.60 MB.
+`node tests/run.mjs` passes physics, combat, parry/reflection, upgrades, levels, safe spawns/checkpoints, saves, local modes, determinism, GLB fixtures, official vendor hashes, UTF-8, EN/FR parity and package checks. The base package is about 1.65 MB.
 
 Four complete Normal victories are checked into tests/replays and selectable in How to play: Brawler 6,145 frames/3 lives; Skimmer 8,367 frames/2 lives; Spark 9,863 frames/2 lives; Brawler/Spark co-op 6,079 frames/4 lives. These legal inputs come from a full-state-observing bot, not human playtests. The 54-case sweep reaches victory or defeat in every case, without a stalled simulation.
 
@@ -34,7 +34,8 @@ After camera/glow/landmark polish, Edge measured 59.7 fps over 4,560 frames with
 - A fresh safely bound browser session verified radial glow, wind-up poses, four-winged silhouettes, area landmarks and new portrait/landscape touch framing. It caught and fixed an empty-halo shader compile error and inward wings. These halos are not post-process bloom; bloom remains off without demonstrated performance headroom.
 - High aerial players and vertically separated partners now fit through rendering-only camera adjustment. Projection tests and a high/low partner browser scene pass; the camera no longer exposes space below the ground row.
 - Normal/glass loop synchronisation and sound-node lifecycle now have adapter regression coverage, including reused tracks, late metadata and pause cleanup. Actual listening validation awaits delivered recordings.
-- Imported-model hit feedback, remaining gameplay literals outside data, and hot-loop allocations need further audit. The zero-allocation target is not established.
+- Imported models now preserve hit/parry/telegraph feedback, invincibility blinking, downed-partner visibility and soft shadows. Attack clips follow simulation frames; cloned materials, mixers and GPU skin textures are released on removal. Boss files retain authored tile dimensions. Node regressions and browser fixtures cover these paths; final animation quality still awaits real models.
+- Remaining gameplay literals outside data and hot-loop allocations need further audit. The zero-allocation target is not established.
 - Share-card file download and title-to-first-fight wall-clock timing still need end-to-end browser verification.
 - Replays require their exact commit/tag; later simulation fixes can change old outcomes.
 - Bloom and optional separate online fighting are not included.

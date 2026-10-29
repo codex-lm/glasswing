@@ -2,7 +2,7 @@ import * as T from '../../vendor/build/three.module.js';
 
 import {Characters} from './placeholders.js';
 
-import {ModelBank} from './models.js';
+import {ModelBank, expiredModel} from './models.js';
 
 import {FX} from './fx.js';
 
@@ -18,7 +18,7 @@ export class View{
 
  resize(){if(!this.available)return;const w=this.canvas.clientWidth,h=this.canvas.clientHeight;this.width=w;this.height=h;this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();}
 
- setLevel(level){if(!this.available)return;this.level=level;this.setInstalled=null;this.forest.visible=true;for(const child of [...this.setGroup.children])this.setGroup.remove(child);for(const m of this.models.values())this.scene.remove(m.group);this.models.clear();this.realIds.clear();for(const child of [...this.forest.children]){child.geometry.dispose();child.material.dispose();this.forest.remove(child);}const hollow=level.id==='hollow'||level.id==='arena-hollow',canopy=level.id==='canopy'||level.id==='arena-canopy',nest=level.id==='nest';this.scene.background.set(hollow?0x2a2f4a:nest?0xc9d9bb:canopy?0xd9edf3:0xcfe9f2);this.scene.fog.color.copy(this.scene.background);const batches=new Map();const temp=new T.Object3D();const put=(type,color,x,y,z,sx,sy,sz,rz=0)=>{const key=`${type}-${color}`;if(!batches.has(key))batches.set(key,{type,color,items:[]});batches.get(key).items.push([x,y,z,sx,sy,sz,rz]);};
+ setLevel(level){if(!this.available)return;this.level=level;this.setInstalled=null;this.forest.visible=true;for(const child of [...this.setGroup.children]){child.dispose();this.setGroup.remove(child);}for(const m of this.models.values())this.bank.dispose(m);this.models.clear();this.realIds.clear();for(const child of [...this.forest.children]){child.dispose();child.geometry.dispose();child.material.dispose();this.forest.remove(child);}const hollow=level.id==='hollow'||level.id==='arena-hollow',canopy=level.id==='canopy'||level.id==='arena-canopy',nest=level.id==='nest';this.scene.background.set(hollow?0x2a2f4a:nest?0xc9d9bb:canopy?0xd9edf3:0xcfe9f2);this.scene.fog.color.copy(this.scene.background);const batches=new Map();const temp=new T.Object3D();const put=(type,color,x,y,z,sx,sy,sz,rz=0)=>{const key=`${type}-${color}`;if(!batches.has(key))batches.set(key,{type,color,items:[]});batches.get(key).items.push([x,y,z,sx,sy,sz,rz]);};
 
  for(let y=0;y<level.grid.length;y++)for(let x=0;x<level.width;x++){const tile=level.grid[y][x];if(!tile)continue;if(tile===1){put('box',0x385c46,x+.5,y-10,0,1,22,2);put('box',0x87b968,x+.5,y+.97,0,1,.12,2.1);}if(tile===2||tile===3){put('box',0x648452,x+.5,y+.9,0,1,.2,1.2,tile===3?.6:0);}if(tile===4)put('box',0x88a27a,x+.5,y+.5,0,.98,1,1.2);if(tile===5)put('ball',0x79e0c8,x+.5,y+.3,0,.5,.3,.6);}
 
@@ -42,11 +42,35 @@ export class View{
   const batches=new Map(),transform=new T.Object3D(),matrix=new T.Matrix4();for(const p of placements){const piece=source.getObjectByName(p.piece);if(!piece)continue;transform.position.set(p.x,p.y,p.z||0);transform.scale.setScalar(p.scale||1);transform.rotation.y=p.flip?Math.PI:0;transform.updateMatrix();piece.traverse(mesh=>{if(!mesh.isMesh)return;const id=mesh.geometry.uuid+':'+(Array.isArray(mesh.material)?mesh.material.map(m=>m.uuid).join(','):mesh.material.uuid);if(!batches.has(id))batches.set(id,{geometry:mesh.geometry,material:mesh.material,matrices:[]});matrix.multiplyMatrices(transform.matrix,mesh.matrixWorld);batches.get(id).matrices.push(matrix.clone());});}
   if(!source.getObjectByName('ground-1')){this.setInstalled=key;return;}for(const b of batches.values()){const mesh=new T.InstancedMesh(b.geometry,b.material,b.matrices.length);for(let i=0;i<b.matrices.length;i++)mesh.setMatrixAt(i,b.matrices[i]);this.setGroup.add(mesh);}this.forest.visible=false;this.setInstalled=key;
  }
- render(state,alpha=1,delta=1/60,loadModels=true){if(!this.available)return;if(this.width!==this.canvas.clientWidth||this.height!==this.canvas.clientHeight)this.resize();if(loadModels&&manifest.sets?.[this.level.id]){const key='set:'+this.level.id;this.bank.load(key,manifest.sets[this.level.id]);if(this.bank.cache.has(key)&&this.setInstalled!==key)this.installSet(key);}const entities=state.players.concat(state.enemies||[]);for(const e of entities){const key=e.boss?'old-glasswing':e.team===2?`wild-${e.kind}`:e.kind;if(loadModels&&manifest.models?.[key]){this.bank.load(key,manifest.models[key]);if(!this.models.has(e.id)){const model=this.bank.instantiate(key,e.eye);if(model){this.models.set(e.id,model);this.realIds.add(e.id);this.scene.add(model.group);}}const model=this.models.get(e.id);if(model){this.bank.pose(model,e,delta,alpha);model.group.visible=!(e.dead&&state.frame-e.defeatedFrame>50);}}}
+ render(state,alpha=1,delta=1/60,loadModels=true){if(!this.available)return;if(this.width!==this.canvas.clientWidth||this.height!==this.canvas.clientHeight)this.resize();if(loadModels&&manifest.sets?.[this.level.id]){const key='set:'+this.level.id;this.bank.load(key,manifest.sets[this.level.id]);if(this.bank.cache.has(key)&&this.setInstalled!==key)this.installSet(key);}const entities=this.entities;
+  entities.length=0;
+  for(const player of state.players)entities.push(player);
+  for(const enemy of state.enemies||[])entities.push(enemy);
+  // Remove models for expired enemies and replaced entities (respawn/round changes).
+  for(const [id,model] of this.models){
+   let present=false;
+   for(const e of entities)if(e.id===id&&!expiredModel(e,state.frame)){present=true;break;}
+   if(!present){this.bank.dispose(model);this.models.delete(id);this.realIds.delete(id);}
+  }
+  for(const e of entities){
+   if(expiredModel(e,state.frame))continue;
+   const key=e.boss?'old-glasswing':e.team===2?`wild-${e.kind}`:e.kind;
+   if(!loadModels||!manifest.models?.[key])continue;
+   this.bank.load(key,manifest.models[key]);
+   let model=this.models.get(e.id);
+   if(!model){
+    model=this.bank.instantiate(key,e.eye);
+    if(model){this.models.set(e.id,model);this.scene.add(model.group);}
+   }
+   if(!model)continue;
+   this.bank.pose(model,e,delta,alpha,state.frame);
+   // Guard must stay readable when an optional block clip has not been delivered.
+   if(e.blocking&&!model.clips.has('block')){model.group.visible=false;this.realIds.delete(e.id);}
+   else this.realIds.add(e.id);
+  }
 
  this.characters.draw(entities,alpha,state.frame,this.realIds);this.fx.draw(state);const framing=this.framing.update(state.players,state.camera||{x:9},this.level.width,this.camera.aspect,alpha);const x=framing.x,targetY=framing.y,distance=framing.distance;this.scene.fog.near=distance+6;this.scene.fog.far=distance+40;this.camera.position.set(x,targetY+distance*CAMERA.tilt,distance);this.camera.lookAt(x,targetY,0);if(state.shake>0){this.camera.position.x+=Math.sin(state.frame*13)*.035;}this.renderer.render(this.scene,this.camera);this.stats.calls=this.renderer.info.render.calls;this.stats.triangles=this.renderer.info.render.triangles;if(delta>0)this.stats.fps=this.stats.fps*.95+Math.min(120,1/delta)*.05;
 
  }
 
 }
-

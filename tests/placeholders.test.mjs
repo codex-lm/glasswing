@@ -17,4 +17,11 @@ for(const kind of ['brawler','skimmer','spark']) {
  p.flash=4;characters.draw([p],1,0);characters.parts.body.mesh.getColorAt(0,color);
  assert.equal(color.getHex(),0xffffff);assert.equal(characters.parts.body.mesh.material.color.getHex(),0xffffff,'hit flash is not multiplied by a black material');
 }
-console.log('PASS placeholders: four outward wings, visible hit flash and initialized empty halo attributes');
+const imported=entity(1);
+characters.draw([imported],1,0,new Set([1]));
+assert.equal(characters.parts.body.mesh.count,0);
+assert.equal(characters.parts.shadow.mesh.count,1,'imported models retain the shared soft shadow');
+imported.inv=48;imported.dead=true;
+characters.draw([imported],1,4);
+assert(characters.parts.body.mesh.count>0,'downed placeholders do not blink out');
+console.log('PASS placeholders: four outward wings, visible hit flash, imported shadows, downed visibility and initialized empty halo attributes');
