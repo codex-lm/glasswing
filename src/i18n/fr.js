@@ -216,5 +216,7 @@ export default {
   "keyRight": "→",
   "keyUp": "↑",
   "keyDown": "↓",
-  "playerControls": "{player} : {left}/{right} bouger · {jump} saut · {attack} poing · {sword} épée · {blast} orbe · {dodge} esquive · {block} garde"
+  "playerControls": "{player} : {left}/{right} bouger · {jump} saut · {attack} poing · {sword} épée · {blast} orbe · {dodge} esquive · {block} garde",
+  "editorChanged": "Niveau modifié. Exporte le JSON pour garder une copie.",
+  "editorCoordinates": "x {x} · y {y}"
 };

@@ -79,3 +79,5 @@ The subsequent projectile-pool fix makes boss slams/barrages configure the orb j
 Help and tutorial prompts use the saved solo/P1/P2 bindings in both languages. Modifier aliases have readable localized names. The HUD labels each co-op player, exposes energy as an accessible meter and preserves unchanged DOM nodes. Controlled UI tests cover remapped keys, upgrade values and HUD reuse.
 
 Imported saves/replays validate playable configuration and custom level structure before replacing current play. Invalid optional best records are discarded; unavailable local storage remains nonfatal. Editor levels named `arena-*` can run solo and survive replay restoration. Structural validation does not establish reachability or difficulty of user-authored levels.
+
+The editor ignores input until a level is available. Painting or undo cancels an older pending load; invalid imports retain the open document. Export JSON for durable copies. Regression tests exercise racing loads and undo; browser exports verified that an invalid import preserved the exact edited level.
