@@ -1,15 +1,118 @@
 import {manifest} from './assets.js';
 import {localAsset} from '../render/models.js';
 import {AUDIO} from '../data/audio.js';
-export class AudioBus{
- constructor(settings){this.settings=settings;this.context=null;this.music=new Map();this.buffers=new Map();this.track=null;this.pending=new Set();this.unlocked=false;this.previousCue=null;}
- unlock(){if(this.unlocked)return;this.unlocked=true;try{this.context=new(window.AudioContext||window.webkitAudioContext)();this.context.resume().catch(()=>{});}catch{} }
- path(entry){if(typeof entry==='string')return entry;const a=document.createElement('audio');return a.canPlayType('audio/ogg')?entry?.ogg||entry?.m4a:entry?.m4a||entry?.ogg;}
- async cue(name){if(!this.context||!name||!this.settings.sound)return;const entry=manifest.sounds?.[name];if(entry){try{if(!this.buffers.has(name)&&!this.pending.has(name)){this.pending.add(name);const r=await fetch(localAsset(this.path(entry)));if(r.ok)this.buffers.set(name,await this.context.decodeAudioData(await r.arrayBuffer()));this.pending.delete(name);}const data=this.buffers.get(name);if(!data)return;const source=this.context.createBufferSource(),gain=this.context.createGain();source.buffer=data;gain.gain.value=this.settings.sound;source.connect(gain).connect(this.context.destination);source.start();}catch{this.pending.delete(name);}return;}
- // Original short oscillator feedback until licensed recordings are delivered.
- const o=this.context.createOscillator(),g=this.context.createGain(),now=this.context.currentTime;o.type='triangle';o.frequency.setValueAtTime(AUDIO.tones[name]||AUDIO.base,now);o.frequency.exponentialRampToValueAtTime((AUDIO.tones[name]||AUDIO.base)*.65,now+AUDIO.duration);g.gain.setValueAtTime(this.settings.sound*AUDIO.volume,now);g.gain.exponentialRampToValueAtTime(.001,now+AUDIO.duration);o.connect(g).connect(this.context.destination);o.start();o.stop(now+AUDIO.duration);
+
+const family=key=>key?.replace(/^glass-/,'');
+export class AudioBus {
+ constructor(settings) {
+  this.settings=settings;this.context=null;this.unlocked=false;this.track=null;
+  this.music=new Map();this.buffers=new Map();this.pending=new Map();
+  this.failedSounds=new Set();this.failedMusic=new Set();
+  this.starting=new Set();this.blocked=new Set();this.syncFrom=new Map();
+  this.loops=new Map();this.wantedLoops=new Set();
  }
- update(s,title,delta){if(!this.unlocked)return;const base=title?'title':s.bossStarted?'boss':s.area<2?'forest':'hollow';const key=!title&&s.players.some(p=>p.glass&&!p.dead)?`glass-${base}`:base;const entry=manifest.music?.[key];if(this.track!==key){this.track=key;if(entry&&!this.music.has(key))try{const a=new Audio(localAsset(this.path(entry)));a.loop=true;a.volume=0;this.music.set(key,a);const previous=[...this.music.entries()].find(([k,v])=>k!==key&&!v.paused);a.addEventListener('loadedmetadata',()=>{if(previous&&Number.isFinite(a.duration))a.currentTime=previous[1].currentTime%a.duration;});a.play().catch(()=>{});}catch{}}
- for(const [id,a] of this.music){const goal=id===key?this.settings.music:0;a.volume=Math.max(0,Math.min(1,a.volume+(goal-a.volume)*Math.min(1,delta/AUDIO.fade)));if(id===key&&a.paused)a.play().catch(()=>{});if(id!==key&&a.volume<.001)a.pause();}
+ unlock() {
+  this.unlocked=true;
+  if(!this.context)try{this.context=new(window.AudioContext||window.webkitAudioContext)();}catch{}
+  this.context?.resume().catch(()=>{});
+  // A fresh gesture may recover suspended audio; failed autoplay is never retried every frame.
+  this.blocked.clear();
+ }
+ path(entry) {
+  if(typeof entry==='string')return entry;
+  const a=document.createElement('audio');
+  return a.canPlayType('audio/ogg')?entry?.ogg||entry?.m4a:entry?.m4a||entry?.ogg;
+ }
+ loadSound(name) {
+  if(this.buffers.has(name))return Promise.resolve(this.buffers.get(name));
+  if(this.pending.has(name))return this.pending.get(name);
+  if(!this.context||!manifest.sounds?.[name]||this.failedSounds.has(name))return Promise.resolve(null);
+  const task=Promise.resolve().then(async()=>{
+   try {
+    const r=await fetch(localAsset(this.path(manifest.sounds[name])));
+    if(!r.ok)throw new Error('Missing sound');
+    const data=await this.context.decodeAudioData(await r.arrayBuffer());
+    this.buffers.set(name,data);return data;
+   }catch{this.failedSounds.add(name);return null;}
+   finally{this.pending.delete(name);}
+  });
+  this.pending.set(name,task);return task;
+ }
+ voice(buffer,loop=false) {
+  const source=this.context.createBufferSource(),gain=this.context.createGain();
+  source.buffer=buffer;source.loop=loop;gain.gain.value=this.settings.sound*(loop?AUDIO.loopVolume:1);
+  source.connect(gain).connect(this.context.destination);
+  source.onended=()=>{source.disconnect();gain.disconnect();};
+  source.start();return {source,gain};
+ }
+ async cue(name) {
+  if(!this.context||!name||!this.settings.sound)return;
+  const data=await this.loadSound(name);
+  if(data){this.voice(data);return;}
+  // Original short oscillator feedback until licensed recordings arrive.
+  const o=this.context.createOscillator(),g=this.context.createGain(),now=this.context.currentTime;
+  const tone=AUDIO.tones[name]||AUDIO.base;o.type='triangle';
+  o.frequency.setValueAtTime(tone,now);o.frequency.exponentialRampToValueAtTime(tone*.65,now+AUDIO.duration);
+  g.gain.setValueAtTime(this.settings.sound*AUDIO.volume,now);g.gain.exponentialRampToValueAtTime(.001,now+AUDIO.duration);
+  o.connect(g).connect(this.context.destination);
+  o.onended=()=>{o.disconnect();g.disconnect();};o.start();o.stop(now+AUDIO.duration);
+ }
+ ensureMusic(key,entry) {
+  if(!entry||this.music.has(key)||this.failedMusic.has(key))return;
+  try {
+   const a=new Audio(localAsset(this.path(entry)));a.loop=true;a.volume=0;
+   this.music.set(key,a);
+   a.addEventListener('loadedmetadata',()=>this.alignMusic(key));
+   a.addEventListener('error',()=>this.failedMusic.add(key));
+  }catch{this.failedMusic.add(key);}
+ }
+ alignMusic(key) {
+  const a=this.music.get(key),source=this.syncFrom.get(key);
+  if(key!==this.track||!a||!source||!Number.isFinite(a.duration)||a.duration<=0)return;
+  try{a.currentTime=source.currentTime%a.duration;this.syncFrom.delete(key);}catch{}
+ }
+ playMusic(key,a) {
+  if(!a.paused||this.starting.has(key)||this.blocked.has(key)||this.failedMusic.has(key))return;
+  this.starting.add(key);
+  Promise.resolve(a.play()).catch(()=>this.blocked.add(key)).finally(()=>this.starting.delete(key));
+ }
+ updateLoops(s,active) {
+  this.wantedLoops.clear();
+  if(active&&this.settings.sound)for(const p of s.players)if(!p.dead) {
+   if(p.clip==='glide')this.wantedLoops.add('glide-loop');
+   if(p.charge>0)this.wantedLoops.add('blast-charge-loop');
+   if(p.glass)this.wantedLoops.add('glass-loop');
+  }
+  for(const [name,voice] of this.loops) {
+   if(!this.wantedLoops.has(name)){voice.source.stop();this.loops.delete(name);}
+   else voice.gain.gain.value=this.settings.sound*AUDIO.loopVolume;
+  }
+  for(const name of this.wantedLoops) {
+   if(this.loops.has(name)||!manifest.sounds?.[name]||this.failedSounds.has(name))continue;
+   const buffer=this.buffers.get(name);
+   if(buffer)this.loops.set(name,this.voice(buffer,true));
+   else if(!this.pending.has(name))this.loadSound(name);
+  }
+ }
+ update(s,title,delta,paused=false) {
+  if(!this.unlocked)return;
+  const base=title?'title':s.bossStarted?'boss':s.area<2?'forest':'hollow';
+  const wanted=!title&&s.players.some(p=>p.glass&&!p.dead)?'glass-'+base:base;
+  // A partial delivery keeps the normal loop instead of fading to silence.
+  const key=manifest.music?.[wanted]?wanted:base;
+  this.ensureMusic(key,manifest.music?.[key]);
+  if(this.track!==key) {
+   const previous=this.music.get(this.track);
+   if(previous&&Number.isFinite(previous.duration)&&previous.duration>0&&family(this.track)===family(key))this.syncFrom.set(key,previous);
+   else this.syncFrom.delete(key);
+   this.track=key;this.alignMusic(key);
+  }
+  for(const [id,a] of this.music) {
+   const goal=id===key?this.settings.music:0;
+   a.volume=Math.max(0,Math.min(1,a.volume+(goal-a.volume)*Math.min(1,delta/AUDIO.fade)));
+   if(id===key){this.alignMusic(id);this.playMusic(id,a);}
+   else if(a.volume<AUDIO.silence)a.pause();
+  }
+  this.updateLoops(s,!title&&!paused&&s.phase==='playing');
  }
 }

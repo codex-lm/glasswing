@@ -96,3 +96,8 @@ Next: inspect glow/telegraphs in browser, remeasure FPS, test high aerial camera
 Done: wrote the delivery checkpoint in FINAL-REPORT.md, refreshed README evidence, and created the thread heartbeat glasswing-finition-de-nuit to continue bounded polish every 30 minutes through the morning. M1–M3 tags remain intact; all four victory replays pass.
 Deviations: remaining hardware, visual, media and human-pacing checks are not finished. Computer Use is unavailable in this turn after URL verification failed. The final morning report is scheduled after 07:30 Europe/Madrid.
 Next: continue the documented polish priorities, then final tests, remote convergence, morning report and heartbeat shutdown.
+
+## Polish 4 — audio phase and resource lifecycle
+Done: repaired normal/glass music transitions in both directions, including reused loops and late metadata; partial music deliveries retain the normal track. Added sustained glide/charge/glass cue plumbing, pause cleanup, disconnected finished sound nodes, bounded failed fetch/autoplay retries and recovery on a fresh gesture. Title Options now retain title music. Adapter tests cover these cases; all four victory replays and the full regression suite remain green.
+Deviations: tests use controlled media adapters and prove timing/lifecycle decisions, not audible seamlessness. Real music and recordings are still absent, so listening validation remains pending. No browser control was attempted in this pass.
+Next: verify the recent rendering changes through a safely bound browser, then address aerial camera framing and imported-model hit feedback; continue the remaining input/data audits.

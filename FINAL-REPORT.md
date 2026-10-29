@@ -34,7 +34,8 @@ Before the latest visual additions, foreground Edge measured 59.9 fps over 3,720
 - The latest radial glow, anticipation poses and area landmarks await browser QA and a new performance measurement. They are not post-process bloom.
 - Computer Use stopped because it could not confirm the current native Windows browser URL. No bypass was attempted.
 - High triple-jump/pogo chains may leave the current vertical camera framing. This needs the next visual pass.
-- Audio normal/glass loop synchronisation, imported-model hit feedback, remaining gameplay literals outside data, and hot-loop allocations need further audit. The zero-allocation target is not established.
+- Normal/glass loop synchronisation and sound-node lifecycle now have adapter regression coverage, including reused tracks, late metadata and pause cleanup. Actual listening validation awaits delivered recordings.
+- Imported-model hit feedback, remaining gameplay literals outside data, and hot-loop allocations need further audit. The zero-allocation target is not established.
 - Share-card file download and title-to-first-fight wall-clock timing still need end-to-end browser verification.
 - Replays require their exact commit/tag; later simulation fixes can change old outcomes.
 - Bloom and optional separate online fighting are not included.
