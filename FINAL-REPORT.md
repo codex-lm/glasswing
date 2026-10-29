@@ -2,7 +2,13 @@
 
 Morning handover, 29 October 2026. M1–M3 and seventeen polish passes are complete for the available procedural assets. The v0.3.1 checkpoint contains the overnight corrections and this delivery report. The missing media and unverified acceptance items below remain open.
 
-Repository: https://github.com/codex-lm/glasswing . Milestone tags: v0.1.0, v0.2.0 and v0.3.0; verified polish checkpoint: https://github.com/codex-lm/glasswing/tree/v0.3.1 . After handover, the user explicitly authorized Codex to publish on LOB7, overriding the original claude.ai reservation, and completed account recovery. Draft bd_s_328480ea-e38b-4aa4-8ae5-74a30f7317d9 passed repository preflight at 3f54229009d0d125b83d60043fcabaade58cedc7. Version 0.3.2 removes only developer Python files from the static package; publication checks remain pending.
+Repository: https://github.com/codex-lm/glasswing . Milestone tags: v0.1.0, v0.2.0 and v0.3.0; overnight polish checkpoint: https://github.com/codex-lm/glasswing/tree/v0.3.1 . The user subsequently authorized Codex to publish on LOB7, overriding the original claude.ai reservation, and completed account recovery.
+
+**Published on LOB7, 29 October 2026 at 09:10:32 UTC, version 0.3.2.** [Play Glasswing](https://lob7.com/player/br_s_1c41c674-0ab0-4a19-b5e9-7182e9461b95) · [Public game page](https://lob7.com/games/bg_s_b2d0cad9-34e9-4076-9b5c-2971fc391971?release=br_s_1c41c674-0ab0-4a19-b5e9-7182e9461b95).
+
+The immutable source is 9a6ce17bdb228e0a0cbda6f2c682675cf9f40973 (tag v0.3.2), package digest e8e3b6ab6709bd21145a26872389db26d646bc3b7be713575df893eff0866f5d. The original draft bd_s_328480ea-e38b-4aa4-8ae5-74a30f7317d9 produced release br_s_1c41c674-0ab0-4a19-b5e9-7182e9461b95 in variant bv_s_9b40fbb7-0f55-42eb-8b84-52daaf8bab3d. LOB7 reports malware, project/licence, browser startup and static analysis checks passed. Its public catalogue independently reports the same published source and version. These bounded checks are not a complete gameplay or security audit.
+
+Version 0.3.2 corrects packaging only: developer Python tools are preserved on dev-assets, Node-only tests remain in git clones but are excluded from source ZIP archives, the favicon is local, and explicit level/replay resource URLs work under the hosted path. Two file-input IDs were renamed for the conservative static scanner. Combat and level data are unchanged. Browser smoke testing on the actual LOB7 player verified the rendered forest, solo selection, movement/jump/attack inputs, pause/resume and loading the Brawler replay; no console errors were captured. This is not a complete human playthrough.
 
 ## What works
 
@@ -16,7 +22,7 @@ The simulation uses fixed 60 Hz updates, seeded randomness and recorded input ma
 
 ## How to play
 
-From the repository directory, run `python -m http.server 8000` and open http://localhost:8000 . No install or build is needed. Tests require Node 22+. The optional cache-disabled preview and GLB-generation Python utilities are preserved on dev-assets; LOB7's static package rejects Python files, so main excludes them.
+Play directly using the LOB7 link above. For local play, run `python -m http.server 8000` from the repository directory and open http://localhost:8000 . No install or build is needed. Tests require a git clone and Node 22+; source ZIP downloads exclude the Node harness. The optional cache-disabled preview and GLB-generation Python utilities are preserved on dev-assets; LOB7's static package rejects Python files, so main excludes them.
 
 | Action | Solo keyboard |
 | --- | --- |
@@ -82,8 +88,8 @@ PROGRESS.md records every deviation and specification ambiguity. In particular: 
 1. Play Brawler on Normal. Deliberately break the mask, repair it with a shard, guard from both sides and parry a projectile. Judge the pace and readability as a human player.
 2. Compare all three silhouettes and idle Spark palms; chain high Skimmer jumps. Try Canopy versus, then co-op revive/leash with two people.
 3. Watch the four reference replays. Inspect tools/diagnostics.html, tools/asset-check.html and tools/results-check.html, then export and test a level with tools/level-editor.html.
-4. Deliver the external media through the manifest, verify provenance, rerun the suite and repeat visual/audio/performance checks before LOB7 publication.
+4. Deliver the external media through the manifest, verify provenance, rerun the suite and repeat visual/audio/performance checks before publishing a new LOB7 edition.
 
 ## Morning handover
 
-The overnight engineering work ends with this checkpoint; no further unattended gameplay changes are planned. The delivery sequence is final checks, commit/tag push, remote convergence verification and pausing glasswing-finition-de-nuit. README keeps unverified acceptance items unchecked; PROGRESS.md retains the complete engineering history. The next useful work is human playtesting and integration of the delivered media.
+The overnight engineering work ended at v0.3.1 and glasswing-finition-de-nuit remains paused. The subsequently requested LOB7 publication is delivered as v0.3.2; no further unattended gameplay changes are planned. README keeps unverified acceptance items unchecked; PROGRESS.md retains the complete engineering history. The next useful work is human playtesting and integration of the delivered media.

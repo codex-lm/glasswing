@@ -2,13 +2,15 @@
 
 A fast 2.5D forest action game designed by Charles. Four black wings, a white mask, and a glass-cannon comeback. Produced by Cédric Bernadac; implemented by Nilo with Codex.
 
+[Play Glasswing on LOB7 — v0.3.2](https://lob7.com/player/br_s_1c41c674-0ab0-4a19-b5e9-7182e9461b95). Published source: `9a6ce17bdb228e0a0cbda6f2c682675cf9f40973`. The four platform checks passed; hosted startup, keyboard input, pause/resume and replay loading were smoke-tested.
+
 Serve this directory with `python -m http.server 8000`, then open http://localhost:8000 . No install or build. Run tests with Node 22+ using `node tests/run.mjs`.
 
 Clone the Git repository to run the Node tests. Source ZIP archives exclude the Node-only test harness via `.gitattributes`, because LOB7 validates every JavaScript file as browser code. JSON replay recordings remain in the archive for the game's replay viewer and browser diagnostics.
 
 Developer-only Python tools (cache-disabled preview and GLB fixture regeneration) are preserved on the [dev-assets branch](https://github.com/codex-lm/glasswing/tree/dev-assets/tools). LOB7 rejects Python files in its static package, so these utilities are excluded from main. The standard Python HTTP server above still serves the game without installation.
 
-The v0.3.1 morning delivery report and remaining work are in FINAL-REPORT.md. M1, M2 and M3 have their original milestone tags; v0.3.1 includes the overnight polish. Implementation and acceptance evidence are recorded in PROGRESS.md. LOB7 publication was authorized after handover; version 0.3.2 corrects only static packaging and is passing through publication checks. See FINAL-REPORT.md for its status.
+The delivery report and remaining work are in FINAL-REPORT.md. M1, M2 and M3 have their original milestone tags; v0.3.1 includes the overnight polish. Implementation and acceptance evidence are recorded in PROGRESS.md. LOB7 publication was authorized after handover; the published v0.3.2 corrects static packaging without changing combat or level data.
 
 ## Play
 
