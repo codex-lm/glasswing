@@ -19,8 +19,9 @@ const noInput=[0,0];
 
 export function createRun(levels,config={}){
  config={seed:'glasswing',kind:'brawler',difficulty:'normal',mode:'solo',rulesVersion:1,eye:EYES[0],kind2:'skimmer',eye2:EYES[1],arena:'arena-clearing',...config};
+ // An editor level is the whole run, including one whose ID starts with arena-.
  if(config.customLevel)levels=[validateLevel(config.customLevel)];
- levels=config.mode==='versus'?[levels.find(l=>l.id===config.arena)||levels[0]]:levels.filter(l=>!l.id.startsWith('arena-'));
+ else levels=config.mode==='versus'?[levels.find(l=>l.id===config.arena)||levels[0]]:levels.filter(l=>!l.id.startsWith('arena-'));
  const s={
   config,seed:config.seed,rng:hashSeed(config.seed),frame:0,area:0,areasCleared:0,
   level:null,levels,levelRevision:0,

@@ -13,6 +13,7 @@ import './levels.test.mjs';
 import './replay.test.mjs';
 
 import './save.test.mjs';
+import './imports.test.mjs';
 import './results.test.mjs';
 import './help.test.mjs';
 import './multiplayer.test.mjs';

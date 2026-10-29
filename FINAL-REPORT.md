@@ -20,7 +20,7 @@ A broken mask gives triple damage, faster movement and free blasts, but the next
 
 ## Evidence
 
-`node tests/run.mjs` passes physics, combat, projectile-pool ownership/exhaustion, parry/reflection, upgrades, levels, safe spawns/checkpoints, saves, local modes, determinism, result cards, GLB fixtures, official vendor hashes, UTF-8, EN/FR parity and package checks. The base package is about 1.71 MB.
+`node tests/run.mjs` passes physics, combat, projectile-pool ownership/exhaustion, parry/reflection, upgrades, levels, safe spawns/checkpoints, saves, local modes, determinism, result cards, GLB fixtures, official vendor hashes, UTF-8, EN/FR parity and package checks. The base package is about 1.72 MB.
 
 Four complete Normal victories are checked into tests/replays and selectable in How to play: Brawler 6,145 frames/3 lives; Skimmer 8,367 frames/2 lives; Spark 9,863 frames/2 lives; Brawler/Spark co-op 6,079 frames/4 lives. These legal inputs come from a full-state-observing bot, not human playtests. The 54-case sweep reaches victory or defeat in every case, without a stalled simulation.
 
@@ -39,6 +39,7 @@ After camera/glow/landmark polish, Edge measured 59.7 fps over 4,560 frames with
 - Fixed boss slams/barrages altering unrelated live projectiles when a pool slot was reused. Boss shots now configure their exact newly created orb, and a full pool spends no energy. Targeted regressions reproduce the original fault and cover exhaustion/recycling. All four recordings retain their winning frame/life totals; intermediate Spark/co-op states change. The post-fix 54-case sweep ends with 40 wins, 14 defeats and zero unfinished runs.
 - Share cards now show the three distinct four-winged kinds, mask state and each co-op player's upgrades. Actual 1200×630 PNG downloads were inspected for three English solo victories and French co-op through tools/results-check.html, using the real export modules and checked legal-input recordings. Title-to-first-fight wall-clock timing remains unverified: automated key-hold timing did not yield a valid live-play sample.
 - Help/tutorials now follow saved key mappings, with localized key names. The co-op HUD identifies both players, exposes energy meters and reuses unchanged DOM. UI adapters cover both languages; the remapped Q prompt and both co-op HUDs were checked in the browser without console errors. The original local save/settings were restored and exported identically after QA.
+- Save/replay imports reject invalid playable configurations, empty/invalid checkpoints and nonfinite level transforms before replacing the current run. Damaged optional records are discarded instead of crashing results. Custom levels with arena-prefixed IDs now run solo and pass replay restoration; arbitrary editor-level reachability is still not guaranteed.
 - Replays require their exact commit/tag; later simulation fixes can change old outcomes.
 - Bloom and optional separate online fighting are not included.
 
