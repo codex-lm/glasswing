@@ -30,7 +30,7 @@ After camera/glow/landmark polish, Edge measured 59.7 fps over 4,560 frames with
 
 - Real Kimi models, Suno music and ElevenLabs recordings are pending. The asset brief, manifests and original GLB fixtures are ready; the default uses procedural art and original oscillator feedback.
 - The 15–25-minute human duration target is unverified. Full-information bots finish much faster; no delays were added to inflate duration.
-- Physical gamepads, keyboard rollover, actual multi-touch and phone GPU performance remain unverified.
+- Physical gamepads, keyboard rollover, actual multi-touch and phone GPU performance remain unverified. Input adapters now test held Start, short key taps, sparse one/two-pad mapping, menu focus/selectors/volume and abandoned remapping. Browser export comparisons verified pause freezing and preservation of the saved run through title reload and replay viewing.
 - A fresh safely bound browser session verified radial glow, wind-up poses, four-winged silhouettes, area landmarks and new portrait/landscape touch framing. It caught and fixed an empty-halo shader compile error and inward wings. These halos are not post-process bloom; bloom remains off without demonstrated performance headroom.
 - High aerial players and vertically separated partners now fit through rendering-only camera adjustment. Projection tests and a high/low partner browser scene pass; the camera no longer exposes space below the ground row.
 - Normal/glass loop synchronisation and sound-node lifecycle now have adapter regression coverage, including reused tracks, late metadata and pause cleanup. Actual listening validation awaits delivered recordings.

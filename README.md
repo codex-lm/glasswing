@@ -14,7 +14,7 @@ Solo: arrows or WASD to move; Space / W / Up to jump, again for a double jump, h
 
 Your white mask is your life. At zero points it shatters: damage ×3, movement +20%, free blasts, but the next hit is fatal. A shard repairs one point. Three lives; checkpoints every 20 tiles. Three altars offer upgrades with one action. Four fragments unlock one extra choice in the Nest. Defeat the Old Glasswing after its final broken-mask rush.
 
-Gamepad: left stick/d-pad; bottom face button jump, left attack, top sword, right blast, right bumper dodge, left bumper guard, Start pause. Menus use directions and the bottom button. One pad in two-player mode is P2; two pads map P1/P2. Physical pad testing is still needed.
+Gamepad: left stick/d-pad; bottom face button jump, left attack, top sword, right blast, right bumper dodge, left bumper guard, Start pause. In menus, up/down moves focus, left/right adjusts selectors and volume, the bottom button confirms or advances to the next field, and the right button goes back. Start toggles once per press. One pad in two-player mode is P2; two pads map P1/P2. Physical pad testing is still needed.
 
 ## Structure and media
 
@@ -67,3 +67,5 @@ Post-process bloom is disabled without demonstrated headroom. Instanced radial h
 M3 browser QA: 390×844 portrait title/options/gameplay fit without horizontal overflow; four tactile actions and pause remain accessible. 844×390 landscape inspected; camera lowered so the touch pad does not cover the player. Fog distance now follows camera distance, avoiding washed-out characters on narrow screens. The editor was used to place a fern by keyboard and open the custom playable level, with no console errors. Physical multi-touch and phone GPU performance remain unverified.
 
 Later camera polish reserves 170 pixels beneath the touch canvas, zooms portrait play for readable characters, and fits aerial/co-op players while keeping the ground bound. The compact landscape HUD leaves the player visible. `tools/diagnostics.html?pose=air&area=nest` shows a high/low partner case; `pose=glass&area=hollow` and `pose=windup&area=canopy` inspect glow and anticipation. These are controlled visual fixtures, not playthroughs.
+
+Input and persistence regression coverage includes sparse one/two-pad mappings, stick drift, held Start, short keyboard taps, control focus, sliders, abandoned key remapping, fresh-run saves and replay isolation. Browser exports proved a paused replay stayed at the exact 294-frame reference prefix and a saved 557-frame run survived replay viewing plus title reload unchanged. The pre-test local save was restored exactly. These checks do not replace physical gamepad testing.
