@@ -7,6 +7,7 @@ import './camera.test.mjs';
 import './placeholders.test.mjs';
 
 import './combat.test.mjs';
+import './sound-events.test.mjs';
 import './projectile-pool.test.mjs';
 
 import './levels.test.mjs';

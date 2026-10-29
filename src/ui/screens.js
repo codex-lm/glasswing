@@ -4,6 +4,13 @@ import {controls,focusStep,navigate} from './navigation.js';
 export class Screens {
  constructor(root,target=window) {
   this.root=root;this.name='title';this.actions={};this.revision=0;this.cleanup=null;
+  // Bubble after the button's action: a new session may have just stopped old effects.
+  root.addEventListener?.('click',event=>{
+   if(event.target.closest('button,a[href]'))this.onCue?.('menu-select');
+  });
+  root.addEventListener?.('change',event=>{
+   if(event.target.matches('input,select'))this.onCue?.('menu-move');
+  });
   target.addEventListener('keydown',e=>{
    if(!this.root.children.length||e.target.matches('input,select,textarea'))return;
    const items=controls(this.root);
@@ -11,6 +18,7 @@ export class Screens {
     if(!items.length)return;
     e.preventDefault();
     focusStep(items,this.root.ownerDocument.activeElement,['ArrowLeft','ArrowUp'].includes(e.code)||e.shiftKey?-1:1);
+    this.onCue?.('menu-move');
    }else if(e.code==='Space'||e.code==='Enter'){
     e.preventDefault();
     const active=this.root.ownerDocument.activeElement;
@@ -36,8 +44,15 @@ export class Screens {
   this.root.ownerDocument.activeElement?.blur();
  }
 
- navigate(menu){navigate(this.root,menu);}
- back(){(this.actions.back||this.actions.resume||this.actions.home)?.();}
+ navigate(menu){
+  const active=this.root.ownerDocument.activeElement;
+  navigate(this.root,menu);
+  if(this.root.ownerDocument.activeElement!==active)this.onCue?.('menu-move');
+ }
+ back(){
+  const action=this.actions.back||this.actions.resume||this.actions.home;
+  if(action){action();this.onCue?.('menu-select');}
+ }
 
  title(actions,noWebGL=false) {
   this.show('title',`<section class="panel title"><div class="eyebrow">${t('byline')}</div><h1>${t('title')}</h1><p class="lead">${t('tagline')}</p><div class="buttons">${['play','twoPlayers','options','howto'].map(id=>`<button data-action="${id}" class="${id==='play'?'primary':''}">${t(id)}</button>`).join('')}</div>${noWebGL?`<p class="status">${t('noWebGL')}</p>`:''}<div class="credit">${t('credit')}</div></section>`,actions);

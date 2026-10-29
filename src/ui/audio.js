@@ -1,6 +1,6 @@
 import {manifest} from './assets.js';
 import {localAsset} from '../render/models.js';
-import {AUDIO} from '../data/audio.js';
+import {AUDIO} from '../data/audio.js?v=0.3.1';
 
 const family=key=>key?.replace(/^glass-/,'');
 export class AudioBus {

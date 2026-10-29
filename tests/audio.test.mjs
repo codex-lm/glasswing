@@ -58,6 +58,14 @@ try {
  assert.equal(await bus.loadSound('bad'),null);assert(!bus.pending.has('bad'));
  assert.equal(requests,1,'rejected asset paths never reach fetch');
 
+ manifest.sounds['blast-charge-loop']='assets/audio/sfx/blast-charge-loop.ogg';
+ manifest.sounds['glass-loop']='assets/audio/sfx/glass-loop.ogg';
+ state.players[0].charge=1;state.players[0].glass=true;
+ bus.update(state,false,1/60);await Promise.all([...bus.pending.values()]);bus.update(state,false,1/60);
+ assert.deepEqual([...bus.loops.keys()].sort(),['blast-charge-loop','glass-loop','glide-loop']);
+ state.players[0].clip='idle';state.players[0].charge=0;state.players[0].glass=false;
+ bus.update(state,false,1/60);assert.equal(bus.loops.size,0);
+
  let complete,disconnected=0;
  const starts={tone:0,sample:0},sources=[];
  const source=type=>{

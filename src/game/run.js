@@ -1,3 +1,4 @@
+import {emitSound} from '../core/sound.js';
 import {entity,remember,leadX} from '../core/entity.js';
 import {hashSeed,random} from '../core/rng.js';
 import {F,EYES,energyMax} from '../data/feel.js';
@@ -32,7 +33,7 @@ export function createRun(levels,config={}){
   effects:Array.from({length:F.effectPool},()=>({life:0})),drops:[],
   camera:{x:F.cameraWidth/2,y:F.cameraHeight/2},hitStop:0,shake:0,
   lives:F.lives,phase:'playing',checkpoint:R.initialCheckpoint,log:[],audio:null,
-  respawn:0,won:false,scores:[0,0],round:0,roundWinner:-1,winner:-1
+  audioEvents:[],respawn:0,won:false,scores:[0,0],round:0,roundWinner:-1,winner:-1
  };
  s.players[0].eye=config.eye;
  if(config.mode!=='solo'){
@@ -70,7 +71,7 @@ export function offer(s,bonus=false){
  }
  s.phase=bonus?'bonus':'altar';s.altarPlayer=0;
  for(const p of s.players)p.prev=0;
- s.audio='altar-chime';
+ emitSound(s,'altar-chime');
 }
 
 export function choose(s,index){
@@ -113,7 +114,7 @@ function flow(s){
  }
  if(allDead){
   s.lives--;
-  if(s.lives<=0){s.phase='result';s.won=false;s.audio='run-lost';}
+  if(s.lives<=0){s.phase='result';s.won=false;emitSound(s,'run-lost');}
   else{s.phase='respawn';s.respawn=F.respawn;}
   return;
  }
@@ -123,12 +124,12 @@ function flow(s){
  const clear=s.spawned.length===(s.level.waves?.length||0)&&!enemyAlive;
  if(s.level.boss&&clear&&!s.bossStarted){spawnBoss(s);return;}
  if(s.bossStarted&&boss?.dead){
-  s.areasCleared=R.forestAreas;s.won=true;s.phase='result';s.audio='run-win';return;
+  s.areasCleared=R.forestAreas;s.won=true;s.phase='result';emitSound(s,'run-win');return;
  }
  if(lead>=s.level.end&&clear&&!s.level.boss){
   s.areasCleared=s.area+1;
   if(s.area<s.levels.length-1)offer(s);
-  else{s.won=true;s.phase='result';}
+  else{s.won=true;s.phase='result';emitSound(s,'run-win');}
  }
 }
 
@@ -142,7 +143,7 @@ function versusAttacks(s){
 
 export function tick(s,inputs=noInput){
  if(s.phase==='result')return;
- s.frame++;s.audio=null;
+ s.frame++;s.audio=null;s.audioEvents.length=0;
  const last=s.log.at(-1);
  if(last&&last[1]===inputs[0]&&last[2]===(inputs[1]||0))last[0]++;
  else s.log.push([1,inputs[0],inputs[1]||0]);

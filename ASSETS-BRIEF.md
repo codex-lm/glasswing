@@ -31,8 +31,10 @@ Exact bases in audio/music/: title, forest, hollow, boss, glass-forest, glass-ho
 
 ## 3. ElevenLabs — sound effects
 
-Original cartoon cues, no gore, clear transients. Deliver masters WAV 44.1 kHz (dev-assets), runtime OGG and optional AAC, in audio/sfx/. Names: step1, step2, jump, doublejump, glide-loop, land, punch1, punch2, punch3, kick, divekick, sword-swing, sword-hit, pogo, blast-fire, blast-charge-loop, blast-hit, dodge, player-hit, mask-crack1, mask-crack2, mask-crack3, mask-shatter, glass-loop, shard-pickup, altar-chime, enemy-telegraph, enemy-beaten, boss-roar, round-win, run-win, run-lost, menu-move, menu-select.
+Original cartoon cues, no gore, clear transients. Deliver masters WAV 44.1 kHz (dev-assets), runtime OGG and optional AAC, in audio/sfx/. Names: step1, step2, jump, doublejump, glide-loop, land, punch1, punch2, punch3, kick, divekick, sword-swing, sword-hit, pogo, blast-fire, blast-charge-loop, blast-hit, dodge, player-hit, mask-crack1, mask-crack2, mask-crack3, mask-shatter, glass-loop, shard-pickup, altar-chime, enemy-telegraph, enemy-beaten, boss-roar, round-win, run-win, run-lost, menu-move, menu-select. Supplemental guard cues: block, parry.
 
 Hits 0.08–0.3 s; shatter 0.6 s, roar <1 s, wins <2 s. Seamless loops for glide/charge/glass. Separate sound/music volume; audio unlocked only by user gesture. Record generator, date, account tier and distribution terms in ASSETS-LICENSE.md before publishing.
 
 Runtime effect delivery: the first use gives an immediate procedural cue while the recording is fetched/decoded; subsequent events use the cached recording. Decoding never replays an older event late. Pause and session changes stop active effects and loops. Validate audible transients, volume balance and loop seams with the actual files after integration.
+
+Cue keys are enumerated in src/data/audio.js. Runtime events cover steps, attack swings/contacts, pogo, blast impacts, mask severity, menus and results; the three sustained loops follow current player state. A reused eight-cue frame buffer deduplicates simultaneous identical sounds and prioritizes mask/parry/result warnings when crowded.

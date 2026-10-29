@@ -85,3 +85,5 @@ The editor ignores input until a level is available. Painting or undo cancels an
 Touch adapter regressions cover two-finger ownership, simultaneous independent controls, true double taps, guard timer cancellation, blur/hidden/menu cleanup and brief blast input. Physical phone multi-touch remains unverified.
 
 An uncached effect gives immediate procedural feedback while its recording decodes for the next event. Late decoding never replays old hits after pause. Session boundaries stop active effects/loops and release their nodes; controlled audio tests cover this lifecycle. Listening validation still awaits the delivered media.
+
+Sound events now preserve mask/parry warnings alongside impacts, with a reused eight-cue frame buffer and per-frame deduplication. Steps, missed swings, pogo, blast impacts, mask severity, menus and custom-level wins are connected; delivery keys live in `src/data/audio.js`. `node tests/trace.mjs --gameplay` excludes only audio fields: seven traces matched across 37,845 updates after this presentation change. Full traces still include audio by default.

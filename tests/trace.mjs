@@ -7,11 +7,13 @@ import {B} from '../src/core/input.js';
 
 const load=id=>JSON.parse(readFileSync(`src/data/levels/${id}.json`));
 const levels=['landing','canopy','hollow','nest'].map(load);
+const gameplayOnly=process.argv.includes('--gameplay');
 function trace(state,advance){
  const hash=createHash('sha256');
  const sample=()=>{
   // Static definitions and the growing input log are already fixed by the input.
   const {levels,config,log,...dynamic}=state;
+  if(gameplayOnly){delete dynamic.audio;delete dynamic.audioEvents;}
   hash.update(JSON.stringify(dynamic));
  };
  sample();advance(sample);

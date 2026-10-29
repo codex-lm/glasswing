@@ -37,6 +37,7 @@ const view=new View(document.querySelector('#world'),{disabled:new URLSearchPara
 
 const touch=new TouchControls(input,storage.settings,pause);
 screens.onChange=()=>input.clear();
+screens.onCue=name=>{audio.unlock();audio.cue(name);};
 input.maps=structuredClone(storage.settings.maps);
 
 let ready=false,customLevel=null,levels=[testLevel],state=createRun(levels),paused=false,uiPhase='',queued=[0,0],replaying=null,activeRun=false,saveFrame=0;
@@ -119,7 +120,8 @@ function loop(time){
    else{
     const revision=state.levelRevision;
     tick(state,masks);
-    if(state.audio)audio.cue(state.audio);
+    if(state.audioEvents?.length)for(const name of state.audioEvents)audio.cue(name);
+    else if(state.audio)audio.cue(state.audio);
     if(state.levelRevision!==revision)view.setLevel(state.level);
     syncUI();
     if(state.frame-saveFrame>=900){persist();saveFrame=state.frame;}

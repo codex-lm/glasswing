@@ -1,3 +1,4 @@
+import {emitSound} from '../core/sound.js';
 import {entity} from '../core/entity.js';
 import {BOSS} from '../data/boss.js';
 import {BOSS_HITBOX as H} from '../data/moves.js';
@@ -13,7 +14,7 @@ export function spawnBoss(s){
   boss:true,phase:1,hp:health,maxMask:health,mask:health,eye:'#19B8A6',
   w:e.w*F.bossSize,h:e.h*F.bossSize,ai:'idle',aiTimer:BOSS.entranceDelay,sequence:0
  });
- s.enemies.push(e);s.bossStarted=true;s.audio='boss-roar';
+ s.enemies.push(e);s.bossStarted=true;emitSound(s,'boss-roar');
  return e;
 }
 
@@ -32,7 +33,7 @@ export function bossTick(s,e){
   if(--e.aiTimer<=0){
    e.ai='telegraph';e.aiTimer=BOSS.telegraph;
    const attacks=BOSS.attacks[e.phase-1];
-   e.action=attacks[e.sequence++%attacks.length];e.clip='telegraph';
+   e.action=attacks[e.sequence++%attacks.length];e.clip='telegraph';emitSound(s,'enemy-telegraph');
   }
  }else if(e.ai==='telegraph'){
   e.clip='telegraph';

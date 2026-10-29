@@ -1,3 +1,5 @@
+import {emitSound} from './sound.js';
+import {AUDIO} from '../data/audio.js?v=0.3.1';
 import {F,DIFFICULTY,energyMax} from '../data/feel.js';
 import {UPGRADE_VALUES as U} from '../data/upgrades.js';
 import {VISUALS as V} from '../data/visuals.js';
@@ -37,7 +39,7 @@ export function hurt(s,target,source,damage=1,{projectile=null,stop=F.hitStop,kn
   if(target.blockAge<(target.glass?F.glassParry:F.parry)){
    target.energy=Math.min(energyMax(target),target.energy+F.parryEnergy);
    target.dodgeCd=0;target.parryFlash=F.parryStop;
-   source.stun=F.stun;source.vulnerable=true;s.hitStop=F.parryStop;s.audio='parry';
+   source.stun=F.stun;source.vulnerable=true;s.hitStop=F.parryStop;emitSound(s,'parry');
    emit(s,target.x,target.y+1,0xffffff,14);
    if(projectile){
     projectile.vx=-projectile.vx;projectile.team=target.team;projectile.owner=target.id;
@@ -47,7 +49,7 @@ export function hurt(s,target,source,damage=1,{projectile=null,stop=F.hitStop,kn
   }
   if(target.energy>=F.blockCost){
    target.energy-=F.blockCost;target.knockback=-target.facing*F.knockback;
-   target.knockFrames=F.knockFrames;s.audio='block';
+   target.knockFrames=F.knockFrames;emitSound(s,'block');
    return 'block';
   }
  }
@@ -64,7 +66,7 @@ export function hurt(s,target,source,damage=1,{projectile=null,stop=F.hitStop,kn
    if(target.hp<=0&&!target.glass){
     target.glass=true;target.hp=1;target.inv=F.invincible;target.phase=3;
     target.stun=F.bossBreakWarning;target.ai='idle';target.aiTimer=0;s.hitStop=F.swordStop;
-    emit(s,target.x,target.y+2,0xf1ece2,24);
+    emit(s,target.x,target.y+2,0xf1ece2,24);emitSound(s,'mask-shatter');
    }else if(target.glass&&target.hp<=0)target.dead=true;
   }else if(target.hp<=0)target.dead=true;
  }else{
@@ -75,8 +77,11 @@ export function hurt(s,target,source,damage=1,{projectile=null,stop=F.hitStop,kn
   }else{
    target.mask=Math.max(0,target.mask-damage);
    if(target.mask<=0){
-    target.glass=true;s.hitStop=F.swordStop;s.audio='mask-shatter';
+    target.glass=true;s.hitStop=F.swordStop;emitSound(s,'mask-shatter');
     emit(s,target.x,target.y+target.h*.8,0xf1ece2,24);
+   }else{
+    emitSound(s,'player-hit');
+    emitSound(s,'mask-crack'+Math.min(AUDIO.maskCracks,Math.max(1,Math.ceil((1-target.mask/target.maxMask)*AUDIO.maskCracks))));
    }
   }
   target.inv=F.invincible;target.move=null;
@@ -87,7 +92,7 @@ export function hurt(s,target,source,damage=1,{projectile=null,stop=F.hitStop,kn
    source.kills++;
    if(source.upgrades.includes('patientMask')&&source.kills%U.patientKills===0)heal(source,U.patientRepair);
   }
-  s.audio=target.team===2?'enemy-beaten':'player-hit';
+  emitSound(s,target.team===2?'enemy-beaten':'player-hit');
  }
  return 'hit';
 }
@@ -123,7 +128,7 @@ export function fire(s,e,charged=false,enemy=false){
   if(!p.hitIds)p.hitIds=[];
   p.hitIds.length=0;
  }
- if(first)s.audio='blast-fire';
+ if(first)emitSound(s,'blast-fire');
  return first;
 }
 
@@ -131,6 +136,8 @@ export function attackTick(s,e,targets){
  if(!e.move)return;
  const m=MOVES[e.move],speed=e.upgrades.includes('quickHands')?1/U.quickHands:1;
  const frame=Math.floor(e.moveFrame),box=m.frames[frame];
+ if(m.stat!=='blast'&&e.moveFrame>=m.startup&&e.moveFrame-speed<m.startup)
+  emitSound(s,m.stat==='sword'?'sword-swing':e.move);
  if((e.move==='blast'||e.move==='charge')&&frame>=m.startup&&!e.fired){
   fire(s,e,e.move==='charge');e.fired=true;
  }
@@ -150,6 +157,7 @@ export function attackTick(s,e,targets){
     if(m.stat==='sword')e.jumps=0;
     if(e.move==='divekick'||e.move==='downsword'){
      e.vy=e.move==='downsword'?F.pogoSpeed:F.diveBounce;
+     if(e.move==='downsword')emitSound(s,'pogo');
      if(e.upgrades.includes('pogoMaster')){
       e.vy*=U.pogoSpeed;e.energy=Math.min(energyMax(e),e.energy+U.pogoEnergy);
      }
@@ -158,7 +166,7 @@ export function attackTick(s,e,targets){
      target.vy=F.kickLaunch;
      if(e.upgrades.includes('shockKick'))target.stun=U.shockKick;
     }
-    s.audio=m.stat==='sword'?'sword-hit':e.move;
+    emitSound(s,m.stat==='sword'?'sword-hit':e.move);
    }
   }
   // Breakable walls use the same active-frame rectangle as enemies.
@@ -185,7 +193,7 @@ export function projectilesTick(s,entities,others=noEntities){
   if(!p.active)continue;
   p.x+=p.vx;p.travel+=Math.abs(p.vx);
   if(solid(tile(s.level,Math.floor(p.x),Math.floor(p.y)))){
-   p.active=false;emit(s,p.x,p.y,p.color,4);continue;
+   p.active=false;emit(s,p.x,p.y,p.color,4);emitSound(s,'blast-hit');continue;
   }
   if(--p.life<=0||p.travel>p.range){p.active=false;continue;}
   // Preserve player-then-enemy resolution order without a concatenated array.
@@ -199,6 +207,7 @@ export function projectilesTick(s,entities,others=noEntities){
    const result=hurt(s,target,source,damage,orbImpact);
    if(result==='parry'){source.stun=F.stun;source.vulnerable=true;break;}
    if(result!=='immune'){
+    emitSound(s,'blast-hit');
     p.hitIds.push(target.id);
     if(p.pierce>0)p.pierce--;else p.active=false;
     break;

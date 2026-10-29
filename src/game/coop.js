@@ -1,3 +1,4 @@
+import {emitSound} from '../core/sound.js';
 import {F} from '../data/feel.js';
 import {RUN as R} from '../data/run.js';
 
@@ -23,7 +24,7 @@ export function coopTick(s){
   if(p.revive>=F.revive){
    helper.mask=Math.max(0,helper.mask-R.reviveMask);helper.glass=helper.mask===0;
    p.dead=false;p.mask=R.reviveMask;p.glass=false;p.revive=0;p.inv=F.invincible;
-   p.clip='idle';p.prev=0;s.audio='shard-pickup';
+   p.clip='idle';p.prev=0;emitSound(s,'shard-pickup');
   }
  }
 }

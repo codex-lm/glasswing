@@ -1,3 +1,5 @@
+import {AUDIO} from '../data/audio.js?v=0.3.1';
+import {emitSound} from '../core/sound.js';
 import {B,edge} from '../core/input.js';
 import {F} from '../data/feel.js';
 import {KINDS} from '../data/kinds.js';
@@ -48,7 +50,7 @@ export function playerTick(s,e,input,targets,resolveAttacks=true){
  e.blocking=false;e.blockAge=F.blockInactiveAge;
  if(edge(input,e.prev,B.dodge)&&e.dodgeCd===0){
   e.dodge=F.dodgeFrames;e.dodgeCd=e.upgrades.includes('dashCooldown')?F.dodgeFast:F.dodgeCooldown;
-  e.move=null;e.charge=0;s.audio='dodge';emit(s,e.x,e.y+.2,0xcfe9f2,5);
+  e.move=null;e.charge=0;emitSound(s,'dodge');emit(s,e.x,e.y+.2,0xcfe9f2,5);
  }
  if(e.dodge){
   e.dodge--;e.vx=e.facing*F.dodgeDistance/F.dodgeFrames;e.vy=0;e.clip='dodge';
@@ -57,8 +59,11 @@ export function playerTick(s,e,input,targets,resolveAttacks=true){
 
  const wasGrounded=e.grounded,oldJumps=e.jumps;
  movement(e,input,s.level);
- if(e.jumps>oldJumps){s.audio=e.jumps>1?'doublejump':'jump';emit(s,e.x,e.y,0xcfe9f2,4);}
- else if(!wasGrounded&&e.grounded){s.audio='land';emit(s,e.x,e.y,0xa9d68a,4);}
+ if(e.jumps>oldJumps){emitSound(s,e.jumps>1?'doublejump':'jump');emit(s,e.x,e.y,0xcfe9f2,4);}
+ else if(!wasGrounded&&e.grounded){emitSound(s,'land');emit(s,e.x,e.y,0xa9d68a,4);}
+
+ if(e.grounded&&e.clip==='run'&&Math.abs(e.vx)>=AUDIO.stepSpeed&&s.frame%AUDIO.stepFrames===0)
+  emitSound(s,Math.floor(s.frame/AUDIO.stepFrames)%2?'step1':'step2');
 
  if(e.move?.startsWith('punch')&&edge(input,e.prev,B.sword)&&
     e.moveFrame>=MOVES[e.move].startup+MOVES[e.move].active)e.move=null;

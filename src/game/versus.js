@@ -1,3 +1,4 @@
+import {emitSound} from '../core/sound.js';
 import {entity} from '../core/entity.js';
 import {F} from '../data/feel.js';
 import {RUN as R,VERSUS as V} from '../data/run.js';
@@ -22,7 +23,7 @@ export function versusFlow(s){
  if(!anyDead)return;
  s.roundWinner=firstAlive?firstAlive.id-1:-1;
  if(s.roundWinner>=0)s.scores[s.roundWinner]++;
- s.audio='round-win';
+ emitSound(s,'round-win');
  if(s.scores[0]>=V.roundsToWin||s.scores[1]>=V.roundsToWin){
   s.winner=s.scores[0]>=V.roundsToWin?0:1;s.won=true;s.phase='result';
  }else{s.phase='round';s.respawn=F.respawn;}

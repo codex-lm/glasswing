@@ -70,7 +70,9 @@ function control(tag,type='') {
 }
 const first=control('BUTTON'),select=control('SELECT'),range=control('INPUT','range'),last=control('BUTTON');
 const items=[first,select,range,last];
-const root={ownerDocument:page,children:[],querySelectorAll:()=>items,querySelector:()=>null};
+const rootEvents={};
+const root={ownerDocument:page,children:[],querySelectorAll:()=>items,querySelector:()=>null,
+ addEventListener:(type,callback)=>rootEvents[type]=callback};
 select.focus();navigate(root,MENU.right);
 assert.equal(select.selectedIndex,1);
 assert.equal(page.activeElement,select);
@@ -95,4 +97,12 @@ input.multi=false;input.maps.solo.pause=['Enter'];
 first.click=()=>screens.show('select','');first.focus();
 target.emit('keydown',{code:'Enter'});target.emit('keyup',{code:'Enter'});input.poll();
 assert(!input.pausePressed,'a remapped menu confirmation cannot undo its own screen transition');
+const menuSounds=[];screens.onCue=name=>menuSounds.push(name);
+first.focus();target.emit('keydown',{code:'ArrowRight'});
+assert.equal(menuSounds.at(-1),'menu-move');
+rootEvents.click({target:{closest:()=>first}});assert.equal(menuSounds.at(-1),'menu-select');
+rootEvents.change({target:{matches:()=>true}});assert.equal(menuSounds.at(-1),'menu-move');
+screens.show('pause','',{resume:()=>resumed++});screens.back();
+assert.equal(menuSounds.at(-1),'menu-select');
+first.focus();screens.navigate(MENU.up);assert.equal(menuSounds.at(-1),'menu-move');
 console.log('PASS input/menu adapters: held Start, suppressed confirmation, one/two pads, drift, focus, selectors, ranges and cleanup');

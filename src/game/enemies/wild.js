@@ -1,3 +1,4 @@
+import {emitSound} from '../../core/sound.js';
 import {entity,leadX,nearestLiving} from '../../core/entity.js';
 import {physics,overlap} from '../../core/physics.js';
 import {hurt,fire,heal,emit} from '../../core/combat.js';
@@ -53,7 +54,7 @@ export function enemyTick(s,e){
   else if(dist<d.reach){
    e.ai='telegraph';e.charging=e.kind==='brawler'&&random(s)<d.chargeChance;
    e.aiTimer=e.charging?d.chargeTelegraph:d.telegraph;e.vx=0;
-   e.aimX=target.x;e.aimY=target.y+W.aimHeight;s.audio='enemy-telegraph';
+   e.aimX=target.x;e.aimY=target.y+W.aimHeight;emitSound(s,'enemy-telegraph');
   }
  }else if(e.ai==='telegraph'){
   e.clip='telegraph';e.vx=0;
@@ -112,7 +113,7 @@ export function wavesTick(s){
    else if(d.type==='shard')heal(p,W.shardRepair);
    else if(d.type==='mask')heal(p,p.maxMask);
    else if(d.type==='fragment')s.fragments++;
-   d.active=false;emit(s,d.x,d.y,0xffd27c,5);s.audio='shard-pickup';break;
+   d.active=false;emit(s,d.x,d.y,0xffd27c,5);emitSound(s,'shard-pickup');break;
   }
  }
 }
