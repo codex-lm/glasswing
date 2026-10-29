@@ -14,6 +14,7 @@ import './replay.test.mjs';
 
 import './save.test.mjs';
 import './results.test.mjs';
+import './help.test.mjs';
 import './multiplayer.test.mjs';
 import './assets.test.mjs';
 import './upgrades.test.mjs';

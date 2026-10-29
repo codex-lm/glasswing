@@ -30,7 +30,7 @@ Levels use bottom-up tile rows: 0 empty, 1 solid, 2 one-way, 3 ascending slope, 
 - [x] `node tests/run.mjs`: physics, guard/parry/stun/reflection, glass mode, levels, deterministic replay, save validation, EN/FR parity, vendor integrity and package checks.
 - [x] At tag v0.1.0: Normal Brawler victory in 6,277 simulation frames, 67 credited defeats, one life left. The current tests/replays/normal-brawler.json is regenerated after simulation fixes; How to play → Watch verified replay plays the current recording.
 - [x] Attacks start in 4–8 frames and finish within 24. Respawn is 60 simulation frames. First wave triggers at tile 4, one tile from start.
-- [ ] End-to-end title-to-first-fight wall-clock timing under 10 seconds has not been instrumented yet.
+- [ ] End-to-end title-to-first-fight wall-clock timing under 10 seconds remains unverified: browser-control timing did not produce a valid live-play sample.
 - [x] Twenty procedural characters after visual polish: 19 draw calls, 43,336 triangles in the diagnostic scene.
 - [x] Edge measured 59.7 fps with 20 characters over 4,560 frames after camera/halo/landmark polish. The earlier background 1 fps was not a valid benchmark.
 - [x] All wild and boss telegraphs are 20–30 frames; bounds tested.
@@ -75,3 +75,5 @@ Result cards preserve each kind's four-winged proportions, eye colour, mask crac
 Simulation tuning is grouped under `src/data/`: feel/physics, move rectangles, kinds, enemy flight/spacing, boss patterns, run/versus flow and upgrade values. Run flow, enemy AI, co-op, versus and camera code now use explicit ordered loops instead of temporary entity lists. `node tests/trace.mjs` prints a SHA-256 digest over every dynamic simulation state for the four recorded runs and three duel scenarios; compare its output before/after refactors. The first audit preserved all seven digests across 37,845 updates. Allocations remain in combat event setup, input logs and rendering; zero garbage per frame is not claimed.
 
 The subsequent projectile-pool fix makes boss slams/barrages configure the orb just spawned, even when an earlier slot is reused while a later player orb is still alive. A full pool leaves energy and existing shots intact. Hit lists, impact rectangles/options and particle records are reused. All four recordings still win at the same frame/life totals; Spark/co-op intermediate traces change where the corrected boss shots occur. The post-fix 54-case sweep completes with 40 wins and 14 defeats, without stalls.
+
+Help and tutorial prompts use the saved solo/P1/P2 bindings in both languages. Modifier aliases have readable localized names. The HUD labels each co-op player, exposes energy as an accessible meter and preserves unchanged DOM nodes. Controlled UI tests cover remapped keys, upgrade values and HUD reuse.
