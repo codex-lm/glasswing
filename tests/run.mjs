@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 
 import './physics.test.mjs';
+import './camera.test.mjs';
+import './placeholders.test.mjs';
 
 import './combat.test.mjs';
 
@@ -35,4 +37,3 @@ for(const name of ['LICENSE','ASSETS-BRIEF.md','ASSETS-LICENSE.md','THIRD_PARTY_
 assert.equal(JSON.parse(readFileSync('LOB7-GAME.json')).entrypoint,'index.html');
 
 console.log('PASS skeleton, legal files, manifest, EN/FR parity');
-

@@ -9,22 +9,22 @@ export class Characters {
   const sphere=new T.SphereGeometry(1,12,8),box=new T.BoxGeometry(1,1,1);
   const wing=new T.Shape();wing.moveTo(0,0);wing.quadraticCurveTo(-.4,.4,-.18,1);wing.quadraticCurveTo(.3,.7,0,0);
   for(const [name,geo,color] of [['body',sphere,PALETTE.body],['mask',sphere,PALETTE.mask],['eyes',sphere,0xffffff],['wings',new T.ShapeGeometry(wing,6),PALETTE.body],['sword',box,PALETTE.body],['cracks',box,PALETTE.crack],['glow',sphere,0xffffff]]) {
-   const mesh=new T.InstancedMesh(geo,new T.MeshBasicMaterial({color,side:T.DoubleSide,fog:false}),1200);
-   mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;this.parts[name]={mesh,n:0};scene.add(mesh);
+   const mesh=new T.InstancedMesh(geo,new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide,fog:false}),1200);
+   mesh.setColorAt(0,this.color.set(color));mesh.instanceColor.setUsage(T.DynamicDrawUsage);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;this.parts[name]={mesh,n:0};scene.add(mesh);
   }
   // Radial halos preserve the black body; these are not post-process bloom.
   const haloMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,
    vertexShader:'varying vec2 vUv; varying vec3 vColor; void main(){vUv=uv;vColor=instanceColor;gl_Position=projectionMatrix*modelViewMatrix*instanceMatrix*vec4(position,1.0);}',
-   fragmentShader:'varying vec2 vUv; varying vec3 vColor; void main(){float a=pow(max(0.0,1.0-length(vUv-.5)*2.0),2.0);gl_FragColor=vec4(vColor,a*.65);}'
+   fragmentShader:'varying vec2 vUv; varying vec3 vColor; void main(){float a=pow(max(0.0,1.0-length(vUv-.5)*2.0),2.0);gl_FragColor=vec4(vColor,a*.65);\n#include <encodings_fragment>\n}'
   });
-  const halo=new T.InstancedMesh(new T.PlaneGeometry(1,1),haloMaterial,200);halo.frustumCulled=false;this.parts.halo={mesh:halo,n:0};scene.add(halo);
+  const halo=new T.InstancedMesh(new T.PlaneGeometry(1,1),haloMaterial,200);halo.setColorAt(0,this.color.set(0xffffff));halo.instanceColor.setUsage(T.DynamicDrawUsage);halo.frustumCulled=false;this.parts.halo={mesh:halo,n:0};scene.add(halo);
   const shadows=new T.InstancedMesh(new T.CircleGeometry(1,16),new T.MeshBasicMaterial({color:0x15281f,transparent:true,opacity:.18,depthWrite:false}),60);
   shadows.frustumCulled=false;scene.add(shadows);this.parts.shadow={mesh:shadows,n:0};
  }
  add(name,x,y,z,sx,sy,sz,rz=0,color=null,rx=0) {
   const part=this.parts[name];if(part.n>=part.mesh.instanceMatrix.count)return;
   const o=this.temp;o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.rotation.set(rx,0,rz);o.updateMatrix();part.mesh.setMatrixAt(part.n,o.matrix);
-  if(color!==null){this.color.set(color);part.mesh.setColorAt(part.n,this.color);}part.n++;
+  if(color!==null){this.color.set(color).convertSRGBToLinear();part.mesh.setColorAt(part.n,this.color);}part.n++;
  }
  draw(entities,alpha,frame,realModels) {
   for(const part of Object.values(this.parts))part.n=0;
@@ -60,7 +60,7 @@ export class Characters {
    }
    for(let i=0;i<4;i++) {
     const side=i<2?-1:1,upper=i%2===0,spread=e.clip==='glide'?1.25:winding?.9:curl?.25:.6,flap=Math.sin(frame*(e.grounded?.12:.4)+i*.8)*.15;
-    this.add('wings',x+side*w*.48,y+h*((upper?.78:.54)-crouch),-.16*size,k.wing*size,k.wing*size,.8,side*(spread+(upper?.1:1.15)+flap),body);
+    this.add('wings',x+side*w*.48,y+h*((upper?.78:.54)-crouch),-.16*size,k.wing*size,k.wing*size,.8,-side*(spread+(upper?.1:1.15)+flap),body);
    }
    const swordOut=e.move==='sword'||e.move==='downsword'||e.action==='sweep'&&e.ai==='attack';
    this.add('sword',x+(swordOut?f*.9*size:f*w*.62),y+(e.move==='downsword'?.15:h*.4),.13,swordOut?1.5*size:.07*size,swordOut?.045*size:.85*size,.05,swordOut?0:-f*.25,body);

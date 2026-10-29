@@ -24,16 +24,15 @@ A broken mask gives triple damage, faster movement and free blasts, but the next
 
 Four complete Normal victories are checked into tests/replays and selectable in How to play: Brawler 6,145 frames/3 lives; Skimmer 8,367 frames/2 lives; Spark 9,863 frames/2 lives; Brawler/Spark co-op 6,079 frames/4 lives. These legal inputs come from a full-state-observing bot, not human playtests. The 54-case sweep reaches victory or defeat in every case, without a stalled simulation.
 
-Before the latest visual additions, foreground Edge measured 59.9 fps over 3,720 frames with 20 characters, 16 draw calls and 42,592 triangles. Earlier background-browser measurements were invalid. M3 phone layouts, editor launch and the real GLB fixture-loading page were inspected in browser.
+After camera/glow/landmark polish, Edge measured 59.7 fps over 4,560 frames with 20 characters, 19 draw calls and 43,336 triangles, without game console errors. Earlier background-browser measurements were invalid. Phone layouts, editor launch and the real GLB fixture-loading page were inspected in browser; the desktop diagnostic is not phone GPU evidence.
 
 ## Missing work and known limitations
 
 - Real Kimi models, Suno music and ElevenLabs recordings are pending. The asset brief, manifests and original GLB fixtures are ready; the default uses procedural art and original oscillator feedback.
 - The 15–25-minute human duration target is unverified. Full-information bots finish much faster; no delays were added to inflate duration.
 - Physical gamepads, keyboard rollover, actual multi-touch and phone GPU performance remain unverified.
-- The latest radial glow, anticipation poses and area landmarks await browser QA and a new performance measurement. They are not post-process bloom.
-- Computer Use stopped because it could not confirm the current native Windows browser URL. No bypass was attempted.
-- High triple-jump/pogo chains may leave the current vertical camera framing. This needs the next visual pass.
+- A fresh safely bound browser session verified radial glow, wind-up poses, four-winged silhouettes, area landmarks and new portrait/landscape touch framing. It caught and fixed an empty-halo shader compile error and inward wings. These halos are not post-process bloom; bloom remains off without demonstrated performance headroom.
+- High aerial players and vertically separated partners now fit through rendering-only camera adjustment. Projection tests and a high/low partner browser scene pass; the camera no longer exposes space below the ground row.
 - Normal/glass loop synchronisation and sound-node lifecycle now have adapter regression coverage, including reused tracks, late metadata and pause cleanup. Actual listening validation awaits delivered recordings.
 - Imported-model hit feedback, remaining gameplay literals outside data, and hot-loop allocations need further audit. The zero-allocation target is not established.
 - Share-card file download and title-to-first-fight wall-clock timing still need end-to-end browser verification.

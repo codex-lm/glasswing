@@ -4,6 +4,8 @@ A fast 2.5D forest action game designed by Charles. Four black wings, a white ma
 
 Serve this directory with `python -m http.server 8000`, then open http://localhost:8000 . No install or build. Run tests with Node 22+ using `node tests/run.mjs`.
 
+For frequent local edits, `python tools/serve.py --port 8000` offers the same static preview with cache disabled. Stop any server already using that port first. No preview server is needed on LOB7.
+
 The current delivery checkpoint and remaining work are in FINAL-REPORT.md. Implementation and acceptance evidence are recorded in PROGRESS.md. Publication on LOB7 is performed separately from claude.ai after delivery of a tagged commit.
 
 ## Play
@@ -29,8 +31,8 @@ Levels use bottom-up tile rows: 0 empty, 1 solid, 2 one-way, 3 ascending slope, 
 - [x] At tag v0.1.0: Normal Brawler victory in 6,277 simulation frames, 67 credited defeats, one life left. The current tests/replays/normal-brawler.json is regenerated after simulation fixes; How to play → Watch verified replay plays the current recording.
 - [x] Attacks start in 4–8 frames and finish within 24. Respawn is 60 simulation frames. First wave triggers at tile 4, one tile from start.
 - [ ] End-to-end title-to-first-fight wall-clock timing under 10 seconds has not been instrumented yet.
-- [x] Twenty procedural characters: 16 draw calls, 42,592 triangles in the diagnostic scene.
-- [x] Foreground Edge measured 59.9 fps with 20 characters over 3,720 frames before later visual polish. The latest halos and landmarks need a fresh measurement; the earlier background 1 fps was not a valid benchmark.
+- [x] Twenty procedural characters after visual polish: 19 draw calls, 43,336 triangles in the diagnostic scene.
+- [x] Edge measured 59.7 fps with 20 characters over 4,560 frames after camera/halo/landmark polish. The earlier background 1 fps was not a valid benchmark.
 - [x] All wild and boss telegraphs are 20–30 frames; bounds tested.
 - [x] EN/FR key parity; French Options rendered and accents checked in browser. UTF-8 validation prevents Windows encoding regressions.
 - [x] Legal files/asset brief included; approximately 1.46 MB before real media. Official vendor SHA-256 checked. No external active requests or prohibited runtime APIs in application code.
@@ -60,6 +62,8 @@ New runs use rulesVersion 3, adding Wind Runner (+10% speed), Deep Reserve (+2 e
 
 Asset verification: `node tests/run.mjs` parses the two original embedded GLB fixtures with the official GLTFLoader, checks 30 animation clips, independently cloned skin bones, recoloured materials, mask/cracks/shards, named forest meshes and rejected external/compressed resources. `tools/asset-check.html` uses assets/manifest.test.json; browser inspection confirmed one loaded model, 30 clips, loaded forest set, zero pending/failed loads and 9 draw calls. `?assets=test` activates the same fixture manifest in the game. Change the normal assets/manifest.json for delivered art; no gameplay code changes are needed. Do not treat the blocky fixtures as final art.
 
-Post-process bloom is disabled. The baseline reached 59.9 fps; later instanced radial halos need fresh browser verification. No online edition is included: it was explicitly optional, experimental and separate, and this main edition forbids peer connections.
+Post-process bloom is disabled without demonstrated headroom. Instanced radial halos passed browser inspection, with the enriched diagnostic scene measuring 59.7 fps. No online edition is included: it was explicitly optional, experimental and separate, and this main edition forbids peer connections.
 
 M3 browser QA: 390×844 portrait title/options/gameplay fit without horizontal overflow; four tactile actions and pause remain accessible. 844×390 landscape inspected; camera lowered so the touch pad does not cover the player. Fog distance now follows camera distance, avoiding washed-out characters on narrow screens. The editor was used to place a fern by keyboard and open the custom playable level, with no console errors. Physical multi-touch and phone GPU performance remain unverified.
+
+Later camera polish reserves 170 pixels beneath the touch canvas, zooms portrait play for readable characters, and fits aerial/co-op players while keeping the ground bound. The compact landscape HUD leaves the player visible. `tools/diagnostics.html?pose=air&area=nest` shows a high/low partner case; `pose=glass&area=hollow` and `pose=windup&area=canopy` inspect glow and anticipation. These are controlled visual fixtures, not playthroughs.
