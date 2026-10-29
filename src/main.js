@@ -25,7 +25,7 @@ import {loadSave,save,captureCurrent} from './core/save.js';
 import {options} from './ui/options.js';
 
 import {TouchControls} from './ui/touch.js';
-import {AudioBus} from './ui/audio.js';
+import {AudioBus} from './ui/audio.js?v=0.3.1';
 
 import {resultsHTML,resultStats,betterResult,shareCard,download} from './ui/results.js';
 
@@ -48,7 +48,7 @@ window.addEventListener('keydown',()=>audio.unlock());window.addEventListener('p
 
 function persist(){captureCurrent(storage,state,activeRun,replaying);save(storage);}
 
-function title(){activeRun=false;paused=false;input.clear();queued.fill(0);input.multi=false;replaying=null;state=createRun(levels);state.players[0].showcase=true;state.players[0].x=13;state.players[0].px=13;state.players[0].y=1;state.players[0].py=1;view.setLevel(state.level);document.querySelector('#hud').innerHTML='';document.querySelector('#glass-border').className='';screens.title({play:()=>select('solo'),twoPlayers:twoPlayers,options:()=>showOptions(title),howto:howto},!view.available);
+function title(){audio.resetEffects();activeRun=false;paused=false;input.clear();queued.fill(0);input.multi=false;replaying=null;state=createRun(levels);state.players[0].showcase=true;state.players[0].x=13;state.players[0].px=13;state.players[0].y=1;state.players[0].py=1;view.setLevel(state.level);document.querySelector('#hud').innerHTML='';document.querySelector('#glass-border').className='';screens.title({play:()=>select('solo'),twoPlayers:twoPlayers,options:()=>showOptions(title),howto:howto},!view.available);
 
  const row=document.createElement('div');row.className='buttons';if(storage.current){const b=document.createElement('button');b.textContent=t('continue');b.onclick=resumeSaved;row.append(b);}screens.root.firstChild.append(row);}
 
@@ -58,9 +58,9 @@ function howto(){screens.show('howto',`<section class="panel"><h2>${t('howto')}<
 
 function twoPlayers(){screens.show('twoPlayers',`<section class="panel"><div class="eyebrow">${t('localModes')}</div><h2>${t('twoPlayers')}</h2><div class="grid"><button data-action="versus" class="card"><h3>${t('versus')}</h3><p>${t('versusDesc')}</p></button><button data-action="coop" class="card"><h3>${t('coop')}</h3><p>${t('coopDesc')}</p></button></div><p>${twoPlayerHelp(input.maps)}</p><button data-action="back">${t('back')}</button></section>`,{versus:()=>select('versus'),coop:()=>select('coop'),back:title});}
 function select(mode='solo'){const count=mode==='solo'?1:2;screens.show('select',`<section class="panel"><div class="eyebrow">${t('choose')}</div><h2>${t(mode)}</h2><div class="grid">${Array.from({length:count},(_,i)=>`<div class="card"><h3>${t(i?'p2':'p1')}</h3><label>${t('kind')}<select id="kind${i}">${Object.entries(KINDS).map(([k,v])=>`<option value="${k}">${t(k)} · ${v.mask} ${t('maskHits')}</option>`).join('')}</select></label><label>${t('eye')}<select id="eye${i}">${EYES.map((c,j)=>`<option value="${c}">${t(['orange','cyan','green','violet','red','yellow','pink','white'][j])}</option>`).join('')}</select></label></div>`).join('')}</div><div class="row">${mode!=='versus'?`<label>${t('difficulty')}<select id="difficulty">${['easy','normal','hard'].map(d=>`<option value="${d}">${t(d)}</option>`).join('')}</select></label>`:`<label>${t('arena')}<select id="arena">${['arena-clearing','arena-canopy','arena-hollow'].map(d=>`<option value="${d}">${t(d)}</option>`).join('')}</select></label>`}<label>${t('seed')}<input id="seed" maxlength="100"></label></div>${count===2?`<p>${twoPlayerHelp(input.maps)}</p><small>${t('sameEyes')}</small>`:''}<div class="buttons"><button class="primary" data-action="start">${t('start')}</button><button data-action="back">${t('back')}</button></div></section>`,{start:()=>{state.config={...state.config,kind:document.querySelector('#kind0').value,rulesVersion:3,mode,eye:document.querySelector('#eye0').value,kind2:document.querySelector('#kind1')?.value||'skimmer',eye2:document.querySelector('#eye1')?.value||EYES[1],arena:document.querySelector('#arena')?.value||'arena-clearing',difficulty:document.querySelector('#difficulty')?.value||'normal',seed:document.querySelector('#seed').value||'glasswing'};storage.settings.difficulty=state.config.difficulty;start();},back:mode==='solo'?title:twoPlayers});if(mode!=='versus')document.querySelector('#difficulty').value=storage.settings.difficulty;document.querySelector('#seed').value='forest-'+new Date().toISOString().slice(0,10);if(count===2){document.querySelector('#eye1').value=EYES[1];document.querySelector('#kind1').value='skimmer';}}
-function start(){if(!ready){screens.simple('play',t('loading'),()=>select(state.config.mode));return;}replaying=null;activeRun=true;queued.fill(0);state=createRun(levels,{...state.config,...(customLevel?{customLevel}:{} )});input.multi=state.config.mode!=='solo';paused=false;input.clear();view.setLevel(state.level);uiPhase='';saveFrame=0;screens.clear();syncUI();persist();}
+function start(){if(!ready){screens.simple('play',t('loading'),()=>select(state.config.mode));return;}audio.resetEffects();replaying=null;activeRun=true;queued.fill(0);state=createRun(levels,{...state.config,...(customLevel?{customLevel}:{} )});input.multi=state.config.mode!=='solo';paused=false;input.clear();view.setLevel(state.level);uiPhase='';saveFrame=0;screens.clear();syncUI();persist();}
 
-function resumeSaved(){if(!storage.current)return;if(!ready){screens.simple('play',t('loading'),title);return;}try{const r=validateReplay(storage.current);state=createRun(levels,r.config);input.multi=state.config.mode!=='solo';for(const [n,a,b] of r.inputs)for(let i=0;i<n;i++)tick(state,[a,b]);paused=false;replaying=null;activeRun=true;queued.fill(0);saveFrame=state.frame;input.clear();view.setLevel(state.level);uiPhase='';syncUI();}catch{screens.simple('play',t('invalidSave'),title);}}
+function resumeSaved(){if(!storage.current)return;if(!ready){screens.simple('play',t('loading'),title);return;}try{const r=validateReplay(storage.current);audio.resetEffects();state=createRun(levels,r.config);input.multi=state.config.mode!=='solo';for(const [n,a,b] of r.inputs)for(let i=0;i<n;i++)tick(state,[a,b]);paused=false;replaying=null;activeRun=true;queued.fill(0);saveFrame=state.frame;input.clear();view.setLevel(state.level);uiPhase='';syncUI();}catch{screens.simple('play',t('invalidSave'),title);}}
 
 async function watchReplay(){
  if(!ready){screens.simple('howto',t('loading'),howto);return;}
@@ -72,7 +72,7 @@ async function watchReplay(){
   if(!response.ok)throw new Error('Missing replay');
   const replay=validateReplay(await response.json());
   if(screens.revision!==revision)return;
-  replaying=new ReplayCursor(replay);activeRun=false;
+  audio.resetEffects();replaying=new ReplayCursor(replay);activeRun=false;
   state=createRun(levels,replaying.config);input.multi=state.config.mode!=='solo';input.clear();queued.fill(0);
   paused=false;uiPhase='';view.setLevel(state.level);syncUI();
  }catch{if(screens.revision===revision)screens.simple('howto',t('invalidSave'),howto);}
@@ -82,13 +82,13 @@ function syncUI(){const key=state.phase+state.altarPlayer;if(uiPhase===key)retur
 
 function resume(){paused=false;uiPhase='';input.clear();syncUI();}
 
-function pause(){if(paused)return;paused=true;input.clear();persist();screens.show('pause',`<section class="panel"><h2>${t('pause')}</h2><div class="buttons"><button data-action="resume">${t('resume')}</button><button data-action="options">${t('options')}</button><button data-action="home">${t('home')}</button><button data-action="replay">${t('exportReplay')}</button></div></section>`,{resume,options:()=>showOptions(pauseReturn),home:title,replay:()=>download(JSON.stringify(record(state)),'glasswing-replay.json')});}
+function pause(){if(paused)return;audio.resetEffects();paused=true;input.clear();persist();screens.show('pause',`<section class="panel"><h2>${t('pause')}</h2><div class="buttons"><button data-action="resume">${t('resume')}</button><button data-action="options">${t('options')}</button><button data-action="home">${t('home')}</button><button data-action="replay">${t('exportReplay')}</button></div></section>`,{resume,options:()=>showOptions(pauseReturn),home:title,replay:()=>download(JSON.stringify(record(state)),'glasswing-replay.json')});}
 
 function pauseReturn(){paused=false;pause();}
 
 
 
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&['playing','altar'].includes(screens.name))pause();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&['playing','altar','respawn','round'].includes(screens.name))pause();});
 
 function menuPad(){
  const menu=input.poll();

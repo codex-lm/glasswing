@@ -58,7 +58,39 @@ try {
  assert.equal(await bus.loadSound('bad'),null);assert(!bus.pending.has('bad'));
  assert.equal(requests,1,'rejected asset paths never reach fetch');
 
- console.log('PASS audio: bidirectional loop phase, late metadata, partial delivery, sustained effects and bounded autoplay retry');
+ let complete,disconnected=0;
+ const starts={tone:0,sample:0},sources=[];
+ const source=type=>{
+  const value={connect(){return this;},disconnect(){disconnected++;},
+   start(){starts[type]++;},stop(when){if(when===undefined)this.onended?.();},
+   frequency:{setValueAtTime(){},exponentialRampToValueAtTime(){}}};
+  sources.push(value);return value;
+ };
+ const gain=()=>({connect(){return this;},disconnect(){disconnected++;},
+  gain:{value:0,setValueAtTime(){},exponentialRampToValueAtTime(){}}});
+ globalThis.fetch=()=>new Promise(resolve=>complete=resolve);
+ manifest.sounds.delayed='assets/audio/sfx/delayed.ogg';
+ const effects=new AudioBus({sound:.5,music:0});
+ effects.context={currentTime:10,destination:{},decodeAudioData:async()=>({duration:1}),
+  createBufferSource:()=>source('sample'),createOscillator:()=>source('tone'),createGain:gain};
+ effects.cue('delayed');
+ assert.equal(starts.tone,1,'first-use feedback never waits for audio decoding');
+ assert.equal(starts.sample,0);assert.equal(effects.effects.size,1);
+ await Promise.resolve();
+ const pending=effects.pending.get('delayed');
+ effects.resetEffects();assert.equal(effects.effects.size,0);assert.equal(disconnected,2);
+ complete({ok:true,arrayBuffer:async()=>new ArrayBuffer(1)});await pending;
+ assert.equal(starts.sample,0,'completion after a pause cannot play a stale event');
+ effects.cue('delayed');assert.equal(starts.sample,1,'the next event uses the decoded recording');
+ sources.at(-1).onended();assert.equal(effects.effects.size,0);assert.equal(disconnected,4);
+ effects.settings.sound=0;effects.cue('delayed');assert.equal(starts.sample,1);
+ effects.settings.sound=.5;
+ const loop=effects.voice({duration:1},true);effects.loops.set('test-loop',loop);
+ effects.cue('delayed');effects.resetEffects();
+ assert.equal(effects.loops.size,0);assert.equal(effects.effects.size,0);
+ assert.equal(disconnected,8,'all effect and loop nodes disconnect at a screen boundary');
+
+ console.log('PASS audio: bidirectional loop phase, immediate first-use feedback, delayed decode isolation, node cleanup and bounded autoplay retry');
 } finally {
  globalThis.Audio=previousAudio;globalThis.fetch=previousFetch;
  manifest.music=oldMusic;manifest.sounds=oldSounds;

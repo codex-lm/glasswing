@@ -83,3 +83,5 @@ Imported saves/replays validate playable configuration and custom level structur
 The editor ignores input until a level is available. Painting or undo cancels an older pending load; invalid imports retain the open document. Export JSON for durable copies. Regression tests exercise racing loads and undo; browser exports verified that an invalid import preserved the exact edited level.
 
 Touch adapter regressions cover two-finger ownership, simultaneous independent controls, true double taps, guard timer cancellation, blur/hidden/menu cleanup and brief blast input. Physical phone multi-touch remains unverified.
+
+An uncached effect gives immediate procedural feedback while its recording decodes for the next event. Late decoding never replays old hits after pause. Session boundaries stop active effects/loops and release their nodes; controlled audio tests cover this lifecycle. Listening validation still awaits the delivered media.

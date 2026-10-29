@@ -9,7 +9,7 @@ export class AudioBus {
   this.music=new Map();this.buffers=new Map();this.pending=new Map();
   this.failedSounds=new Set();this.failedMusic=new Set();
   this.starting=new Set();this.blocked=new Set();this.syncFrom=new Map();
-  this.loops=new Map();this.wantedLoops=new Set();
+  this.loops=new Map();this.wantedLoops=new Set();this.effects=new Set();
  }
  unlock() {
   this.unlocked=true;
@@ -41,21 +41,30 @@ export class AudioBus {
  voice(buffer,loop=false) {
   const source=this.context.createBufferSource(),gain=this.context.createGain();
   source.buffer=buffer;source.loop=loop;gain.gain.value=this.settings.sound*(loop?AUDIO.loopVolume:1);
+  const voice={source,gain};
+  if(!loop)this.effects.add(voice);
   source.connect(gain).connect(this.context.destination);
-  source.onended=()=>{source.disconnect();gain.disconnect();};
-  source.start();return {source,gain};
+  source.onended=()=>{source.disconnect();gain.disconnect();this.effects.delete(voice);};
+  source.start();return voice;
  }
- async cue(name) {
+ resetEffects() {
+  for(const voice of this.effects)try{voice.source.stop();}catch{}
+  for(const voice of this.loops.values())try{voice.source.stop();}catch{}
+  this.effects.clear();this.loops.clear();this.wantedLoops.clear();
+ }
+ cue(name) {
   if(!this.context||!name||!this.settings.sound)return;
-  const data=await this.loadSound(name);
+  const data=this.buffers.get(name);
   if(data){this.voice(data);return;}
-  // Original short oscillator feedback until licensed recordings arrive.
+  // First-use feedback stays immediate; decoding prepares future hits, never a late one.
+  if(manifest.sounds?.[name]&&!this.failedSounds.has(name))this.loadSound(name);
   const o=this.context.createOscillator(),g=this.context.createGain(),now=this.context.currentTime;
+  const voice={source:o,gain:g};this.effects.add(voice);
   const tone=AUDIO.tones[name]||AUDIO.base;o.type='triangle';
   o.frequency.setValueAtTime(tone,now);o.frequency.exponentialRampToValueAtTime(tone*.65,now+AUDIO.duration);
   g.gain.setValueAtTime(this.settings.sound*AUDIO.volume,now);g.gain.exponentialRampToValueAtTime(.001,now+AUDIO.duration);
   o.connect(g).connect(this.context.destination);
-  o.onended=()=>{o.disconnect();g.disconnect();};o.start();o.stop(now+AUDIO.duration);
+  o.onended=()=>{o.disconnect();g.disconnect();this.effects.delete(voice);};o.start();o.stop(now+AUDIO.duration);
  }
  ensureMusic(key,entry) {
   if(!entry||this.music.has(key)||this.failedMusic.has(key))return;
